@@ -6,7 +6,7 @@
 它基于 Node.js 和 TypeScript，因此你不能直接使用它来克隆 Git 仓库。
 
  - 从github: 你应该访问 [这个页面](https://github.com/RuanhoR/mbler/releases)，选择最新版本，点击 `dist.zip` 下载。
-- [下载](/public/mbler-0.1.1.zip)
+- [下载](/public/mbler-dist-0.1.1.zip)
 然后解压这个压缩包。（如果你是 Windows 用户，请使用像 7-zip 这样的工具）用终端打开它。
 
 在解压的文件夹中，进入 dist 文件夹。
