@@ -41,10 +41,6 @@ const nav: ThemeConfig['nav'] = [{
     ]
   },
   {
-    text: 'API',
-    link: '/api/'
-  },
-  {
     text: "lang / 切换语言",
     items: [{
         text: "中文",
