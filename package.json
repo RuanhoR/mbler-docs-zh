@@ -1,0 +1,12 @@
+{
+  "name": "mbler-docs",
+  "version": "0.0.3",
+  "scripts": {
+    "docs:dev": "pnpm vitepress dev",
+    "docs:build": "pnpm vitepress build",
+    "docs:preview": "pnpm vitepress preview"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0"
+  }
+}
