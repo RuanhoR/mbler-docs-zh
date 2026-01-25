@@ -11,6 +11,10 @@ export const sidebar: ThemeConfig['sidebar'] = {
       {
         text: '快速开始',
         link: '/guide/quick-start'
+      },
+      {
+        link: '/guide/cli',
+        text: "命令使用"
       }
     ]
   }],
