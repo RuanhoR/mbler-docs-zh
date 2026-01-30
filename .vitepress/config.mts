@@ -3,28 +3,28 @@ import type {
 } from '@vue/theme'
 export const sidebar: ThemeConfig['sidebar'] = {
   '/guide/': [{
-    text: '开始',
-    items: [{
-        text: '介绍',
-        link: '/guide/introduction'
-      },
-      {
-        text: '快速开始',
-        link: '/guide/quick-start'
-      },
-      {
-        link: '/guide/cli',
-        text: "命令使用"
-      }
-    ]
-  }],
+      text: '开始',
+      items: [{
+          text: '介绍',
+          link: '/guide/introduction'
+        },
+        {
+          text: '快速开始',
+          link: '/guide/quick-start'
+        }
+      ]
+    },
+    {
+      link: '/guide/cli',
+      text: "命令使用"
+    }
+  ],
   '/examples/': [{
     text: 'Basic',
     items: [{
-        text: 'Hello World',
-        link: '/examples/hello-world'
-      }
-    ]
+      text: 'Hello World',
+      link: '/examples/hello-world'
+    }]
   }]
 }
 const nav: ThemeConfig['nav'] = [{
@@ -40,12 +40,12 @@ const nav: ThemeConfig['nav'] = [{
       },
       {
         text: "总览",
-        link: "./guide/introduction"
+        link: "/guide/introduction"
       }
     ]
   },
   {
-    text: " 切换语言",
+    text: "切换语言",
     items: [{
         text: "中文",
         link: "https://zh.mbler-docs.ruanhor.dpdns.org"
