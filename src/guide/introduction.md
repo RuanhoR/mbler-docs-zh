@@ -1,6 +1,6 @@
 # mbler
 ## 概述
-mbler 是一个开发工具。它基于 nodejs 和 typescript。你可以在 Windows、Android（安装 Termux 层）、Linux、Mac 等操作系统上使用它。
+mbler 是一个开发工具。它基于 nodejs 和 typescript。你可以在 Windows、Android（Termux ）、Linux、Mac 等操作系统上使用它。
 
 关于
 - [github 仓库](https://github.com/RuanhoR/mbler)
