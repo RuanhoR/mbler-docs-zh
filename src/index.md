@@ -1,19 +1,23 @@
 ---
+title: Mbler 文档
+description: Minecraft Bedrock Addon开发工具 Mbler文档站
+lang: zh-CN
 layout: home
 hero:
-  name: mbler 文档
-  text: 一款轻量mcbe-addon开发工具
+  name: Mbler Docs
   actions:
-    - theme: brand
+    - name: Mbler
+      tagline: 一个基于 Rollup 的mcbe Addon开发工具
       text: 开始
       link: /guide/quick-start
-    - theme: alt
-      text: 在 GITHUB上查看本文档
-      link: https://github.com/RuanhoR/mbler-docs
-features:
-  - title: i18n 支持
-    details: 你可以设置语言，比如英语和中文
-  - title: 测试 mcx功能
-    details: 你可以用更简单的方式注册事件和编写组件
-    link: /guide/mcx
+      theme: brand
+    - name: Mcx DSL
+      theme: alt
+      tagline: 基于 babel, typescript, rollup
+      text: mcx 是创建附加包功能的一种Beta功能
+      link: /guide/mcx
+    - name: 在Github上查看
+      theme: alt
+      text: 在Github上可以审查代码，提供建议，等等
+      link: /other/github
 ---

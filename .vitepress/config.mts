@@ -3,49 +3,56 @@ import type {
 } from '@vue/theme'
 export const sidebar: ThemeConfig['sidebar'] = {
   '/guide/': [{
-      text: '开始',
+      text: '教程',
       items: [{
           text: '介绍',
           link: '/guide/introduction'
         },
         {
-          text: '快速开始',
+          text: '开始',
           link: '/guide/quick-start'
+        },
+        {
+          text: "项目结构",
+          link: "/guide/project"
+        },
+        {
+          link: '/guide/cli',
+          text: "命令使用"
+        },
+        {
+          link: '/guide/mcx',
+          test: '使用mcx创建项目(Beta)'
         }
       ]
     },
     {
-      link: '/guide/cli',
-      text: "命令使用"
+      text: '内部实现',
+      items: [{
+        text: "Mbler",
+        link: "/guide/internal/mbler"
+      }, {
+        text: "Mcx",
+        link: "/guide/internal/mcx"
+      }]
     }
-  ],
-  '/examples/': [{
-    text: 'Basic',
-    items: [{
-      text: 'Hello World',
-      link: '/examples/hello-world'
-    }]
-  }]
+  ]
 }
 const nav: ThemeConfig['nav'] = [{
     text: '文档',
     activeMatch: `^/(guide|examples)/`,
     items: [{
-        text: '示例',
-        link: '/examples/hello-world'
-      },
-      {
-        text: '快速开始',
+        text: '开始',
         link: '/guide/quick-start'
       },
       {
-        text: "总览",
+        text: "介绍",
         link: "/guide/introduction"
       }
     ]
   },
   {
-    text: "切换语言",
+    text: "语言",
     items: [{
         text: "中文",
         link: "https://zh.mbler-docs.ruanhor.dpdns.org"
