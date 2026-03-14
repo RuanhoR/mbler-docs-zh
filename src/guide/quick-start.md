@@ -12,6 +12,10 @@ sudo npm install -g mbler
 # pnpm
 pnpm install -g mbler
 ```
+如果需要手动安装，可以去 [下载](/other/download) 下载zip，解压后运行
+```bash
+npm i && npm link
+```
 然后，可以确认一下是否成功安装
 ```
 mbler version
