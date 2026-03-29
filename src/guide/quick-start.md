@@ -44,13 +44,13 @@ no     pnpm     npm
 使用Beta Api? (y/n): y
 ```
 将会生成文件
- - ![folder](/static/folder.svg) `behavior`
- - ![folder](/static/folder.svg) `node_modules`
- - ![yaml](/static/yaml_file.svg) `pnpm-lock.yaml`
- - ![jaon](/static/json_file.svg) `tsconfig.json` (仅输入的语言为ts或mcx)
- - ![jaon](/static/json_file.svg) `mbler.config.json`
- - ![jaon](/static/json_file.svg) `package.json`
- - ![folder](/static/folder.svg) `resources`
+ - <img style="width: 50px;height:50px" src="/static/folder.svg"> `behavior`
+ - <img style="width: 50px;height:50px" src="/static/folder.svg"> `node_modules`
+ - <img style="width: 50px;height:50px" src="/static/yaml_file.svg"> `pnpm-lock.yaml`
+ - <img style="width: 50px;height:50px" src="/static/json_file.svg"> `tsconfig.json` (仅输入的语言为ts或mcx)
+ - <img style="width: 50px;height:50px" src="/static/json_file.svg"> `mbler.config.json`
+ - <img style="width: 50px;height:50px" src="/static/json_file.svg"> `package.json`
+ - <img style="width: 50px;height:50px" src="/static/folder.svg">) `resources`
 
 其中，resources和behavior里面，可以放原版附加包的json等内容。  
 

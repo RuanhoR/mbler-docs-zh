@@ -83,6 +83,6 @@ export default {
     }]
   },
   markdown: {
-    html: false
+    html: true
   }
 }

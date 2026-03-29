@@ -32,3 +32,25 @@ mbler version -show commit
 # 输出： commit: xxx
 ```
 ## `build` 命令
+将项目构建为 mc 插件。如果环境变量中的 `BUILD_MODULE` 为 `build`，它还会生成一个可以导入游戏的包。
+
+## `watch` 命令
+监视更改并实时构建。无参数，依赖工作目录上下文。
+
+## `set-work-dir` 命令
+设置工作目录管理模式。
+示例
+- 使用当前工作目录
+```bash
+mbler set-work-dir off
+```
+- 使用工作目录管理器
+```bash
+mbler set-work-dir on
+# 设置工作目录
+mbler work ./project
+```
+
+## `work` 命令
+
+设置工作目录，更多请参见 `set-work-dir`
