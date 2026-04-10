@@ -30,7 +30,10 @@ npm install @mbler/mcx --save
   transform: [AsyncFunction: transform],
   utils: [class McxUtlis],
   // 导出的类型
-  PUBTYPE: {}
+  PUBTYPE: {},
+  ItemComponent: [class ItemComponent],
+  EntityComponent: [class EntityComponent],
+  BlockComponent: [class BlockComponent]
 }
 ```
 (注：此表中除 `PUBTYPE` 字段，其他没有出现，使用时却有的字段为实验性或有可能删除)
@@ -200,3 +203,5 @@ declare function compileMCXFn(mcxCode: string): MCXCompileData;
 
 ### transform
 把mcx修改为js
+
+### ItemCommponent

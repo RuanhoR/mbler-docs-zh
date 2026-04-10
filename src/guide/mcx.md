@@ -65,4 +65,34 @@ event.subscribe() // 全部注册，也可以 event.subscribe("EntityHitEntity")
 </script>
 ```
 ### Component MCX
-这个不用想了，还在计划阶段
+首先，创建一个 .mcx 文件，在里面加上 `<Component>` 标签  
+演示  
+```
+<Component>
+  <items>
+    <item id="demo">itemComponent</item>
+  </items>
+</Component>
+<sctipt>
+import { ItemComponent } from "@mbler/mcx-core"
+const itemComponent = new ItemComponent({
+  format: "1.21.100", // 格式版本
+  name: "Demo Item",
+  id: "mcx_demo:demo_item"
+});
+itemComponent.setAllowOffHand(true) // 允许放在副手
+export {
+  itemComponent
+}
+</script>
+```
+解释
+ - Component
+   组件定义的根标签
+     - items
+       - 声明这里要定义 item 的JSON
+         - item 声明这里要定义一个物品从script的导出，内容是导出字符串，属性的id是文件Id
+ - Script
+   - 必须实现在Component定义的这个导出，否则编译时期会报错  
+
+关于 @mbler/mcx-core的组件导出，详见 [MCX 导出对象解析](./internal/mcx)
