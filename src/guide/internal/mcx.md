@@ -205,3 +205,8 @@ declare function compileMCXFn(mcxCode: string): MCXCompileData;
 把mcx修改为js
 
 ### ItemCommponent
+用于创建物品JSON组件
+### BlockComponent
+用于创建方块json组件
+### EntityComponent
+用于创建实体json组件
