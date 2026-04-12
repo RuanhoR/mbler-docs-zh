@@ -55,7 +55,7 @@ const nav: ThemeConfig['nav'] = [{
     text: "语言",
     items: [{
         text: "中文",
-        link: "https://zh.mbler-docs.ruanhor.dpdns.org"
+        link: "https://zh-mbler-docs.ruanhor.dpdns.org"
       },
       {
         text: "English",
