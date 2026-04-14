@@ -4,9 +4,15 @@
   "scripts": {
     "docs:dev": "pnpm vitepress dev",
     "docs:build": "pnpm vitepress build",
-    "docs:preview": "pnpm vitepress preview"
+    "docs:preview": "pnpm vitepress preview",
+    "postdocs:build": "node ./scripts/generate_sitemap.js"
   },
+  "type": "module",
   "devDependencies": {
+    "vite-plugin-sitemap": "^0.8.2",
     "vitepress": "^1.0.0"
+  },
+  "dependencies": {
+    "xml": "^1.0.1"
   }
 }
