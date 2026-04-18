@@ -3,7 +3,7 @@
 ## 下载
 该工具依赖于 Nodejs，因此请先到 [Nodejs](https://nodejs.org) 下载 Nodejs。如果你是手机用户，可以先搜索Termux并下载Nodejs。 
 
-安装Nodejs后，你可以通过命令安装
+安装Nodejs后，你可以通过命令安装 [npm包地址](https://npmjs.com/package/mbler)
 ```bash
 # NPM
 npm install -g mbler
