@@ -22,7 +22,7 @@ export const sidebar: ThemeConfig['sidebar'] = {
         },
         {
           link: '/guide/mcx',
-          test: '使用mcx创建项目(Beta)'
+          text: '使用mcx创建项目(Beta)'
         }
       ]
     },
