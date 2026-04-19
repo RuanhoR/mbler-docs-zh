@@ -23,6 +23,10 @@ export const sidebar: ThemeConfig['sidebar'] = {
         {
           link: '/guide/mcx',
           text: '使用mcx创建项目(Beta)'
+        },
+        {
+          text: 'Vscode 扩展',
+          link: '/guide/vscode'
         }
       ]
     },
