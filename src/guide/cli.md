@@ -85,9 +85,13 @@ mbler work ./project
 用法：
 `mbler unpublish @scope/name@version`
 
-## `set-token` 命令
+## `config` 命令
 - 提示：此命令正在计划中
 
 用法：
-`mbler set-token <token>`
-设置你的 `pmnx.qzz.io` 令牌
+`mbler config get <key>`  
+`mbler config set <key> <value>`  
+`mbler config point `  
+`mbler config point <new confog file point>`  
+
+常见Key: token(存储pmnx token)
