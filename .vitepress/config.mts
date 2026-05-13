@@ -1,97 +1,108 @@
-import type {
-  Config as ThemeConfig
-} from '@vue/theme'
-export const sidebar: ThemeConfig['sidebar'] = {
-  '/guide/': [{
-      text: '教程',
-      items: [{
-          text: '介绍',
-          link: '/guide/introduction'
+import type { Config as ThemeConfig } from "@vue/theme";
+export const sidebar: ThemeConfig["sidebar"] = {
+  "/guide/": [
+    {
+      text: "教程",
+      items: [
+        {
+          text: "介绍",
+          link: "/guide/introduction",
         },
         {
-          text: '开始',
-          link: '/guide/quick-start'
+          text: "开始",
+          link: "/guide/quick-start",
         },
         {
           text: "项目结构",
-          link: "/guide/project"
+          link: "/guide/project",
         },
         {
-          link: '/guide/cli',
-          text: "命令使用"
+          link: "/guide/cli",
+          text: "命令使用",
         },
         {
-          link: '/guide/mcx',
-          text: '使用mcx创建项目(Beta)'
+          link: "/guide/mcx",
+          text: "使用mcx创建项目(Beta)",
         },
         {
-          text: 'Vscode 扩展',
-          link: '/guide/vscode'
-        }
-      ]
+          text: "Vscode 扩展",
+          link: "/guide/vscode",
+        },
+      ],
     },
     {
-      text: '内部实现',
-      items: [{
-        text: "Mbler",
-        link: "/guide/internal/mbler"
-      }, {
-        text: "Mcx",
-        link: "/guide/internal/mcx"
-      }]
-    }
-  ]
-}
-const nav: ThemeConfig['nav'] = [{
-    text: '文档',
+      text: "内部实现",
+      items: [
+        {
+          text: "Mbler",
+          link: "/guide/internal/mbler",
+        },
+        {
+          text: "Mcx",
+          link: "/guide/internal/mcx",
+        },
+      ],
+    },
+  ],
+};
+const nav: ThemeConfig["nav"] = [
+  {
+    text: "文档",
     activeMatch: `^/(guide|examples)/`,
-    items: [{
-        text: '开始',
-        link: '/guide/quick-start'
+    items: [
+      {
+        text: "开始",
+        link: "/guide/quick-start",
       },
       {
         text: "介绍",
-        link: "/guide/introduction"
-      }
-    ]
+        link: "/guide/introduction",
+      },
+    ],
   },
   {
     text: "语言",
-    items: [{
+    items: [
+      {
         text: "中文",
-        link: "https://zh-mbler-docs.ruanhor.dpdns.org"
+        link: "https://zh-mbler-docs.ruanhor.dpdns.org",
       },
       {
         text: "English",
-        link: "https://mbler-docs.ruanhor.dpdns.org"
-      }
-    ]
+        link: "https://mbler-docs.ruanhor.dpdns.org",
+      },
+    ],
   },
   {
     text: "Sitemap",
-    link: "/sitemap.xml"
-  }
-]
+    link: "/sitemap.xml",
+  },
+];
 export default {
-  title: 'Mbler Docs',
-  description: 'Mbler Docs',
+  title: "Mbler Docs",
+  description: "Mbler Docs",
   srcDir: "src",
   themeConfig: {
     footer: {
       license: {
-        text: 'MIT License',
-        link: 'https://opensource.org/licenses/MIT'
-      }
+        text: "MIT License",
+        link: "https://opensource.org/licenses/MIT",
+      },
+    },
+    outline: {
+      level: [1, 2, 3, 4, 5, 6],
     },
     nav,
     sidebar,
-    socialLinks: [{
-      icon: 'github',
-      link: 'https://github.com/RuanhoR/mbler'
-    }]
+    socialLinks: [
+      {
+        icon: "github",
+        link: "https://github.com/RuanhoR/mbler",
+      },
+    ],
   },
   markdown: {
-    html: true
+    html: true,
   },
   base: "/",
-}
+};

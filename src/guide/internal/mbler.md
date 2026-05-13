@@ -13,12 +13,33 @@ npm i mbler --save
 Mbler 从 `0.2.4-rc.6` 版本开始支持模块化导入：
 
 ```javascript
-// esmodule
+// 主入口
 import * as mbler from "mbler";
 
 // 构建模块入口 (推荐) - 包含 Build、build、watch 等构建相关 API
 import * as Build from "mbler/build";
 ```
+
+::: warning 废弃提示
+从 `0.2.4-rc.6` 版本开始，**不推荐**使用 `mbler.Build` 或 `mbler.default.Build` 来访问构建 API。这些 API 已迁移到 `mbler/build` 入口点。
+
+旧写法（已废弃）:
+
+```javascript
+import * as mbler from "mbler";
+mbler.Build; // 已废弃
+mbler.build; // 已废弃
+```
+
+新写法（推荐）:
+
+```javascript
+import * as Build from "mbler/build";
+Build.Build; // 新的 Build 类
+Build.build; // 新的 build 函数
+```
+
+:::
 
 ## 总览
 
@@ -27,38 +48,17 @@ import * as Build from "mbler/build";
 ```javascript
 require("mbler");
 /* return: {
-  Build: [Object: null prototype] {
-    Build: [class Build],
-    build: [Function: build],
-    default: [class Build],
-    watch: [Function: watch]
-  },
-  Types: [Object: null prototype] {
-    LanguageNames: [ 'zh', 'en' ],
-    cmdList: [
-      'c',     'work',
-      'help',  'h',
-      'init',  'version',
-      'build', 'watch',
-      'lang'
-    ],
-    templateMblerConfig: {
-      name: 'demo',
-      description: 'demo',
-      version: '0.0.0',
-      mcVersion: '1.21.100',
-      script: [Object],
-      minify: false,
-      outdir: [Object]
-    }
-  },
+  LanguageNames: [ 'zh', 'en' ],
   cli: [AsyncFunction: cli],
-  commander: [Object: null prototype] {
+  cmdList: [...],
+  commander: {
     Input: [class Input],
     click: [Function: click],
     onEnd: [Function: onEnd]
   },
-  i18n: [Object: null prototype] { default: {} }
+  defineConfig: [Function: defineConfig],
+  i18n: {},
+  templateMblerConfig: {...}
 }*/
 ```
 
@@ -78,13 +78,50 @@ require("mbler/build");
 ```
 
 **使用场景：**
+
 - 当你只需要构建功能而不需要 CLI 或其他功能时
 - 用于封装自定义的构建流程
 - 减少不必要的依赖导入
 
-## API
+# API
 
-### cli
+## mbler
+
+### mbler cli
+
+运行一个 cli 服务，解析当前 cli 参数。
+
+```typescript
+function cli(): Promise<void>;
+```
+
+**参数：** 无
+
+**返回值：**
+
+- `Promise<void>` - CLI 执行完成
+
+---
+
+### mbler defineConfig
+
+定义 Mbler 配置文件类型，用于类型提示。
+
+```typescript
+function defineConfig(config: MblerConfigData): MblerConfigData;
+```
+
+**参数：**
+
+- `config: MblerConfigData` - Mbler 配置数据
+
+**返回值：**
+
+- `MblerConfigData` - 返回传入的配置对象
+
+---
+
+### mbler cli
 
 运行一个cli服务，解析当前cli参数  
 直接调用，无参数
@@ -95,106 +132,60 @@ function cli(): Promise<void>;
 
 ---
 
-### Build
+## Types
 
-为手动控制内部构建的api，你可以使用这个api进行封装你的应用程序中对构建的处理
+### Types LanguageNames
 
-#### build
-
-进行一次构建，需要参数
+支持的语言名称列表。
 
 ```typescript
-function build(cliParam: CliParam, work: string): Promise<number>;
+const LanguageNames: ["zh", "en"];
 ```
-
-**参数：**
-
-- `cliParam: CliParam` - CLI参数对象
-- `work: string` - 工作目录路径
-
-**返回值：**
-
-- `Promise<number>` - 返回状态码，0表示成功
-
-#### watch
-
-启动监听模式，文件变化时自动重新构建
-
-```typescript
-function watch(cliParam: CliParam, work: string): Promise<number>;
-```
-
-**参数：**
-
-- `cliParam: CliParam` - CLI参数对象
-- `work: string` - 工作目录路径
-
-**返回值：**
-
-- `Promise<number>` - 返回状态码，0表示成功
-
-#### Build 类
-
-构建类，提供更细粒度的构建控制。
-
-```typescript
-class Build {
-  currentConfig: MblerConfigData | null;
-  srcDirs: { behavior: string; resources: string } | null;
-  outdirs: { behavior: string; resources: string; dist: string } | null;
-  module: "behavior" | "resources" | "all" | null;
-  init: boolean;
-
-  constructor(
-    opts: Record<string, string>,
-    baseBuildDir: string,
-    resolve: (a: number) => void,
-    isWatch?: boolean,
-  );
-
-  // 开始构建
-  start(): Promise<void>;
-
-  // 启动监听模式
-  watch(): Promise<null | undefined>;
-
-  // 获取监听器句柄
-  getWatchers(): {
-    rollup: rollup.RollupWatcher;
-    chokidar: ReturnType<typeof watch$1>;
-  } | null;
-
-  // 关闭监听器
-  closeWatchers(): void;
-}
-```
-
-**属性：**
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `currentConfig` | `MblerConfigData \| null` | 当前配置 |
-| `srcDirs` | `{ behavior: string; resources: string } \| null` | 源目录 |
-| `outdirs` | `{ behavior: string; resources: string; dist: string } \| null` | 输出目录 |
-| `module` | `'behavior' \| 'resources' \| 'all' \| null` | 当前模块类型 |
-| `init` | `boolean` | 初始化状态 |
-
-**方法：**
-| 方法 | 说明 |
-|------|------|
-| `start()` | 开始构建 |
-| `watch()` | 启动监听模式 |
-| `getWatchers()` | 获取监听器句柄 |
-| `closeWatchers()` | 关闭监听器 |
 
 ---
 
-### Types
+### Types cmdList
 
-类型定义模块
+可用命令列表。
 
-#### CliParam
+```typescript
+const cmdList: readonly [
+  "c",
+  "work",
+  "help",
+  "h",
+  "init",
+  "version",
+  "build",
+  "watch",
+  "lang",
+  "set-work-dir",
+  "publish",
+  "unpublish",
+  "install",
+  "uninstall",
+  "login",
+  "profile",
+  "view",
+  "config",
+];
+```
 
-CLI参数接口
+---
+
+### Types templateMblerConfig
+
+默认配置模板。
+
+```typescript
+const templateMblerConfig: MblerConfigData;
+```
+
+---
+
+### Types CliParam
+
+CLI 参数接口。
 
 ```typescript
 interface CliParam {
@@ -204,14 +195,15 @@ interface CliParam {
 ```
 
 **属性：**
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `params` | `string[]` | 命令行参数数组 |
-| `opts` | `Record<string, string>` | 选项键值对 |
 
-#### MblerConfigData
+- `params: string[]` - 命令行参数数组
+- `opts: Record<string, string>` - 选项键值对
 
-配置文件数据接口
+---
+
+### Types MblerConfigData
+
+配置文件数据接口。
 
 ```typescript
 interface MblerConfigData {
@@ -222,23 +214,26 @@ interface MblerConfigData {
   outdir?: MblerConfigOutdir;
   script?: MblerConfigScript;
   minify?: boolean;
+  build?: MblerBuildConfig;
 }
 ```
 
 **属性：**
-| 属性 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `name` | `string` | 是 | 项目名称 |
-| `description` | `string` | 是 | 项目描述 |
-| `version` | `string` | 是 | 项目版本 |
-| `mcVersion` | `string \| string[]` | 是 | Minecraft版本 |
-| `outdir` | `MblerConfigOutdir` | 否 | 输出目录配置 |
-| `script` | `MblerConfigScript` | 否 | 脚本配置 |
-| `minify` | `boolean` | 否 | 是否压缩代码 |
 
-#### MblerConfigOutdir
+- `name: string` - 项目名称（必填）
+- `description: string` - 项目描述（必填）
+- `version: string` - 项目版本（必填）
+- `mcVersion: string | string[]` - Minecraft 版本（必填）
+- `outdir?: MblerConfigOutdir` - 输出目录配置
+- `script?: MblerConfigScript` - 脚本配置
+- `minify?: boolean` - 是否压缩代码
+- `build?: MblerBuildConfig` - 构建配置
 
-输出目录配置接口
+---
+
+### Types MblerConfigOutdir
+
+输出目录配置接口。
 
 ```typescript
 interface MblerConfigOutdir {
@@ -249,15 +244,16 @@ interface MblerConfigOutdir {
 ```
 
 **属性：**
-| 属性 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `behavior` | `string` | 否 | 行为包输出目录 |
-| `resources` | `string` | 否 | 资源包输出目录 |
-| `dist` | `string` | 是 | 主输出目录 |
 
-#### MblerConfigScript
+- `behavior?: string` - 行为包输出目录
+- `resources?: string` - 资源包输出目录
+- `dist: string` - 主输出目录（必填）
 
-脚本配置接口
+---
+
+### Types MblerConfigScript
+
+脚本配置接口。
 
 ```typescript
 interface MblerConfigScript {
@@ -269,16 +265,43 @@ interface MblerConfigScript {
 ```
 
 **属性：**
-| 属性 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `main` | `string` | 是 | 入口文件 |
-| `ui` | `boolean` | 否 | 是否启用UI |
-| `lang` | `'ts' \| 'mcx' \| 'js'` | 否 | 脚本语言类型 |
-| `UseBeta` | `boolean` | 否 | 是否使用Beta API |
 
-#### ManifestData
+- `main: string` - 入口文件（必填）
+- `ui?: boolean` - 是否启用 UI
+- `lang?: "ts" | "mcx" | "js"` - 脚本语言类型
+- `UseBeta?: boolean` - 是否使用 Beta API
 
-清单数据接口
+---
+
+### Types MblerBuildConfig
+
+构建配置接口。
+
+```typescript
+interface MblerBuildConfig {
+  rollupPlugins?: Plugin[];
+  cache?: "auto" | "enable" | "disable";
+  bundle?: boolean;
+  onEnd?: (config: MblerConfigData) => Promise<void>;
+  onStart?: (config: MblerConfigData) => Promise<void>;
+  onWarn?: (config: MblerConfigData, warning: Error) => void;
+}
+```
+
+**属性：**
+
+- `rollupPlugins?: Plugin[]` - 自定义 Rollup 插件
+- `cache?: "auto" | "enable" | "disable"` - 缓存模式
+- `bundle?: boolean` - 是否打包
+- `onEnd?: (config: MblerConfigData) => Promise<void>` - 构建完成回调
+- `onStart?: (config: MblerConfigData) => Promise<void>` - 构建开始回调
+- `onWarn?: (config: MblerConfigData, warning: Error) => void` - 警告回调
+
+---
+
+### Types ManifestData
+
+清单数据接口。
 
 ```typescript
 interface ManifestData {
@@ -311,154 +334,81 @@ interface ManifestData {
 }
 ```
 
-**属性：**
-| 属性 | 类型 | 说明 |
-|------|------|------|
-| `format_version` | `number` | 格式版本 |
-| `header` | `object` | 清单头部信息 |
-| `modules` | `array` | 模块列表 |
-| `dependencies` | `array` | 依赖列表 |
-| `subpack` | `array` | 子包配置 |
-| `capabilities` | `string[]` | 能力列表 |
-
-#### language
-
-语言配置接口
-
-```typescript
-interface language {
-  description: string;
-  help: {
-    [K in (typeof cmdList)[number] | "cmds"]: string | readonly string[];
-  };
-  default: {
-    unexpected: string;
-    youis: string;
-  };
-  workdir: {
-    set: string;
-    nfound: string;
-  };
-  init: {
-    initDes: string;
-    name: string;
-    description: string;
-    useGIT: string;
-    useUI: string;
-    lang: string;
-    betaApi: string;
-    mcVersion: string;
-    noName: string;
-    noMCVersion: string;
-    noLanguare: string;
-  };
-}
-```
-
-#### npmFetchData
-
-NPM包信息接口
-
-```typescript
-interface npmFetchData {
-  name: string;
-  "dist-tags": Record<string, string>;
-  versions: Record<
-    string,
-    {
-      maintainers: { name: string; mail: string }[];
-      dist: { shasum: string; tarball: string };
-      author: { name: string; mail: string };
-      license: string;
-      version: string;
-    }
-  >;
-  readme: string;
-  keywords: string[];
-  homepage: string;
-  time: Record<string, string>;
-}
-```
-
-#### 常量
-
-**LanguageNames**
-
-```typescript
-const LanguageNames: ["zh", "en"];
-```
-
-支持的语言名称列表
-
-**cmdList**
-
-```typescript
-const cmdList: readonly [
-  "c",
-  "work",
-  "help",
-  "h",
-  "init",
-  "version",
-  "build",
-  "watch",
-  "lang",
-];
-```
-
-可用命令列表
-
-**templateMblerConfig**
-
-```typescript
-const templateMblerConfig: MblerConfigData = {
-  name: 'demo',
-  description: 'demo',
-  version: '0.0.0',
-  mcVersion: '1.21.100',
-  script: { ... },
-  minify: false,
-  outdir: { ... }
-}
-```
-
-默认配置模板
-
 ---
 
-### commander
+## commander
 
-控制台交互模块
+### commander Input
 
-#### Input 类
-
-工具类：提供控制台交互功能，比如高亮菜单渲染、交互式选择等
+工具类：提供控制台交互功能，比如高亮菜单渲染、交互式选择等。
 
 ```typescript
 class Input {
-  // 渲染菜单，高亮选中项
   static render(arr: string[], index: number): string;
-
-  // 交互式菜单选择器
   static select<T extends Array<any>>(tip: string, arr: T): Promise<T[number]>;
-
-  // 注册全局按键回调
   static use(
     task: (name: string, ctrl: boolean, alt: boolean, raw: string) => void,
   ): void;
 }
 ```
 
-**静态方法：**
-| 方法 | 参数 | 返回值 | 说明 |
-|------|------|--------|------|
-| `render` | `arr: string[]`, `index: number` | `string` | 渲染菜单字符串，高亮选中项 |
-| `select` | `tip: string`, `arr: T` | `Promise<T[number]>` | 交互式菜单选择 |
-| `use` | `task: Function` | `void` | 注册按键回调 |
+#### commander Input render
 
-#### click
+渲染菜单字符串，高亮选中项。
 
-等待某个按键被按下
+```typescript
+static render(arr: string[], index: number): string;
+```
+
+**参数：**
+
+- `arr: string[]` - 菜单选项数组
+- `index: number` - 选中项索引
+
+**返回值：**
+
+- `string` - 渲染后的菜单字符串
+
+---
+
+#### commander Input select
+
+交互式菜单选择。
+
+```typescript
+static select<T extends Array<any>>(tip: string, arr: T): Promise<T[number]>;
+```
+
+**参数：**
+
+- `tip: string` - 提示文字
+- `arr: T` - 选项数组
+
+**返回值：**
+
+- `Promise<T[number]>` - 选中的结果
+
+---
+
+#### commander Input use
+
+注册全局按键回调。
+
+```typescript
+static use(task: (name: string, ctrl: boolean, alt: boolean, raw: string) => void): void;
+```
+
+**参数：**
+
+- `task: (name: string, ctrl: boolean, alt: boolean, raw: string) => void` - 回调函数
+
+**返回值：** 无
+
+---
+
+### commander click
+
+等待某个按键被按下。
 
 ```typescript
 function click(
@@ -468,19 +418,19 @@ function click(
 ```
 
 **参数：**
-| 参数 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `name` | `string` | 是 | 按键名称 |
-| `options.ctrl` | `boolean` | 否 | 是否需要Ctrl组合键 |
-| `options.alt` | `boolean` | 否 | 是否需要Alt组合键 |
+
+- `name: string` - 按键名称（必填）
+- `options?: { ctrl?: boolean; alt?: boolean }` - 按键选项
 
 **返回值：**
 
-- `Promise<void>` - 按键按下时resolve
+- `Promise<void>` - 按键按下时 resolve
 
-#### onEnd
+---
 
-注册进程退出时的回调任务
+### commander onEnd
+
+注册进程退出时的回调任务。
 
 ```typescript
 function onEnd(task: () => void): void;
@@ -490,11 +440,15 @@ function onEnd(task: () => void): void;
 
 - `task: () => void` - 退出时执行的回调函数
 
+**返回值：** 无
+
 ---
 
-### i18n
+## i18n
 
-国际化模块
+### i18n default
+
+国际化模块的默认导出。
 
 ```typescript
 interface i18n extends language {
@@ -505,9 +459,203 @@ interface i18n extends language {
 }
 ```
 
-**Lang 类方法：**
-| 方法 | 说明 |
-|------|------|
-| `init()` | 初始化语言设置 |
-| `set(newLang)` | 设置当前语言 |
-| `get()` | 获取当前语言配置 |
+---
+
+### i18n Lang
+
+语言管理类。
+
+```typescript
+class Lang {
+  init(): void;
+  set(newLang: "zh" | "en"): void;
+  get(): language;
+}
+```
+
+#### i18n Lang init
+
+初始化语言设置。
+
+```typescript
+init(): void;
+```
+
+---
+
+#### i18n Lang set
+
+设置当前语言。
+
+```typescript
+set(newLang: "zh" | "en"): void;
+```
+
+**参数：**
+
+- `newLang: "zh" | "en"` - 语言类型
+
+---
+
+#### i18n Lang get
+
+获取当前语言配置。
+
+```typescript
+get(): language;
+```
+
+**返回值：**
+
+- `language` - 当前语言配置
+
+---
+
+## Build (mbler/build)
+
+### Build build
+
+进行一次构建。
+
+```typescript
+function build(cliParam: CliParam, work: string): Promise<number>;
+```
+
+**参数：**
+
+- `cliParam: CliParam` - CLI 参数对象
+- `work: string` - 工作目录路径
+
+**返回值：**
+
+- `Promise<number>` - 返回状态码，0 表示成功
+
+---
+
+### Build watch
+
+启动监听模式，文件变化时自动重新构建。
+
+```typescript
+function watch(cliParam: CliParam, work: string): Promise<number>;
+```
+
+**参数：**
+
+- `cliParam: CliParam` - CLI 参数对象
+- `work: string` - 工作目录路径
+
+**返回值：**
+
+- `Promise<number>` - 返回状态码，0 表示成功
+
+---
+
+### Build Build
+
+构建类，提供更细粒度的构建控制。
+
+```typescript
+class Build {
+  currentConfig: MblerConfigData | null;
+  srcDirs: { behavior: string; resources: string } | null;
+  outdirs: { behavior: string; resources: string; dist: string } | null;
+  module: "behavior" | "resources" | "all" | null;
+  init: boolean;
+
+  constructor(
+    opts: Record<string, string>,
+    baseBuildDir: string,
+    resolve: (a: number) => void,
+    isWatch?: boolean,
+  );
+
+  start(): Promise<void>;
+  watch(): Promise<null | undefined>;
+  getWatchers(): { rollup: any; chokidar: any } | null;
+  closeWatchers(): void;
+}
+```
+
+#### Build Build constructor
+
+```typescript
+constructor(
+  opts: Record<string, string>,
+  baseBuildDir: string,
+  resolve: (a: number) => void,
+  isWatch?: boolean,
+);
+```
+
+**参数：**
+
+- `opts: Record<string, string>` - 选项
+- `baseBuildDir: string` - 基础构建目录
+- `resolve: (a: number) => void` - 完成回调
+- `isWatch?: boolean` - 是否监听模式
+
+---
+
+#### Build Build start
+
+开始构建。
+
+```typescript
+start(): Promise<void>;
+```
+
+**返回值：**
+
+- `Promise<void>` - 构建完成
+
+---
+
+#### Build Build watch
+
+启动监听模式。
+
+```typescript
+watch(): Promise<null | undefined>;
+```
+
+**返回值：**
+
+- `Promise<null | undefined>`
+
+---
+
+#### Build Build getWatchers
+
+获取监听器句柄。
+
+```typescript
+getWatchers(): { rollup: any; chokidar: any } | null;
+```
+
+**返回值：**
+
+- `{ rollup: any; chokidar: any } | null` - 监听器句柄
+
+---
+
+#### Build Build closeWatchers
+
+关闭监听器。
+
+```typescript
+closeWatchers(): void;
+```
+
+---
+
+### Build McxTsc
+
+MCX TypeScript 编译器。
+
+```typescript
+class McxTsc {
+  constructor();
+  transform(code: string, options?: object): string;
+}
+```
