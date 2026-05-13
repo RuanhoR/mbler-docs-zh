@@ -14,7 +14,7 @@
 ## mcx-core 提供的 API
 安装
 ```bash
-npm install @mbler/mcx --save
+npm install @mbler/mcx-core --save
 ```
 提供的API总体结构
 ```
@@ -29,11 +29,25 @@ npm install @mbler/mcx --save
   plugin: [Function: mcxPlugn],
   transform: [AsyncFunction: transform],
   utils: [class McxUtlis],
+  compile_component: [Object: null prototype] {
+    item: [class ItemComponent],
+    entity: [class EntityComponent],
+    block: [class BlockComponent]
+  },
   // 导出的类型
   PUBTYPE: {},
   ItemComponent: [class ItemComponent],
   EntityComponent: [class EntityComponent],
-  BlockComponent: [class BlockComponent]
+  BlockComponent: [class BlockComponent],
+  PNGImageComponent: [class PNGImageComponent],
+  JPGImageComponent: [class JPGImageComponent],
+  SVGImageComponent: [class SVGImageComponent],
+  GIFImageComponent: [class GIFImageComponent],
+  ComponentType: [Object: null prototype] {
+    ItemComponentType: {...},
+    BlockComponentType: {...},
+    EntityComponentType: {...}
+  }
 }
 ```
 (注：此表中除 `PUBTYPE` 字段，其他没有出现，使用时却有的字段为实验性或有可能删除)
@@ -204,9 +218,191 @@ declare function compileMCXFn(mcxCode: string): MCXCompileData;
 ### transform
 把mcx修改为js
 
-### ItemCommponent
-用于创建物品JSON组件
+### ItemComponent
+用于创建物品 JSON 组件
+
+#### 基本用法
+```typescript
+import { ItemComponent } from "@mbler/mcx-core";
+
+const itemComponent = new ItemComponent({
+  format: "1.21.100", // 格式版本
+  name: "Demo Item",
+  id: "mcx_demo:demo_item"
+});
+
+// 设置物品允许放置在副手
+itemComponent.setAllowOffHand(true);
+
+// 设置物品最大堆叠数量
+itemComponent.setMaxStackSize(64);
+
+// 添加自定义组件
+itemComponent.addComponent("minecraft:hand_equipped", true);
+
+// 生成 JSON
+const json = itemComponent.toJSON();
+```
+
+#### 构造函数参数
+```typescript
+interface ItemComponentOptions {
+  format: string;      // 格式版本，如 "1.21.100"
+  name: string;        // 物品显示名称
+  id: string;          // 物品唯一标识符，如 "namespace:item_id"
+}
+```
+
+#### 常用方法
+| 方法 | 说明 |
+|------|------|
+| `setAllowOffHand(allow: boolean)` | 设置是否允许放置在副手 |
+| `setMaxStackSize(size: number)` | 设置最大堆叠数量 |
+| `setIcon(texture: string)` | 设置物品图标纹理 |
+| `addComponent(name: string, value: any)` | 添加自定义组件 |
+| `toJSON()` | 生成最终的 JSON 对象 |
+
+---
+
 ### BlockComponent
-用于创建方块json组件
+用于创建方块 JSON 组件
+
+#### 基本用法
+```typescript
+import { BlockComponent } from "@mbler/mcx-core";
+
+const blockComponent = new BlockComponent({
+  format: "1.21.100",
+  name: "Demo Block",
+  id: "mcx_demo:demo_block"
+});
+
+// 设置方块硬度
+blockComponent.setBlockHardness(1.5);
+
+// 设置方块爆炸抗性
+blockComponent.setBlockExplosionResistance(3.0);
+
+// 设置方块亮度
+blockComponent.setEmissive(true);
+
+const json = blockComponent.toJSON();
+```
+
+#### 构造函数参数
+```typescript
+interface BlockComponentOptions {
+  format: string;      // 格式版本
+  name: string;        // 方块显示名称
+  id: string;          // 方块唯一标识符
+}
+```
+
+#### 常用方法
+| 方法 | 说明 |
+|------|------|
+| `setBlockHardness(hardness: number)` | 设置方块硬度 |
+| `setBlockExplosionResistance(resistance: number)` | 设置爆炸抗性 |
+| `setFriction(friction: number)` | 设置摩擦系数 |
+| `setEmissive(emissive: boolean)` | 设置自发光 |
+| `addComponent(name: string, value: any)` | 添加自定义组件 |
+| `toJSON()` | 生成最终的 JSON 对象 |
+
+---
+
 ### EntityComponent
-用于创建实体json组件
+用于创建实体 JSON 组件
+
+#### 基本用法
+```typescript
+import { EntityComponent } from "@mbler/mcx-core";
+
+const entityComponent = new EntityComponent({
+  format: "1.21.100",
+  name: "Demo Entity",
+  id: "mcx_demo:demo_entity"
+});
+
+// 设置实体是否是空中生物
+entityComponent.setAirborne(true);
+
+// 设置实体是否可以移动
+entityComponent.setCanFly(true);
+
+// 添加自定义组件
+entityComponent.addComponent("minecraft:behavior.random_stroll", {
+  priority: 0,
+  speed: 1.0
+});
+
+const json = entityComponent.toJSON();
+```
+
+#### 构造函数参数
+```typescript
+interface EntityComponentOptions {
+  format: string;      // 格式版本
+  name: string;        // 实体显示名称
+  id: string;          // 实体唯一标识符
+}
+```
+
+#### 常用方法
+| 方法 | 说明 |
+|------|------|
+| `setAirborne(isAirborne: boolean)` | 设置是否为空中生物 |
+| `setCanFly(canFly: boolean)` | 设置是否可以飞行 |
+| `setCanSwim(canSwim: boolean)` | 设置是否可以游泳 |
+| `setHealth(health: number)` | 设置生命值 |
+| `setMovementSpeed(speed: number)` | 设置移动速度 |
+| `addComponent(name: string, value: any)` | 添加自定义组件 |
+| `toJSON()` | 生成最终的 JSON 对象 |
+
+---
+
+### ImageComponent
+用于创建图像组件（PNG、JPG、SVG、GIF）
+
+#### 基本用法
+```typescript
+import {
+  PNGImageComponent,
+  JPGImageComponent,
+  SVGImageComponent,
+  GIFImageComponent
+} from "@mbler/mcx-core";
+
+// PNG 图片
+const pngImage = new PNGImageComponent("./textures/item/demo.png");
+
+// JPG 图片
+const jpgImage = new JPGImageComponent("./textures/item/demo.jpg");
+
+// SVG 图片
+const svgImage = new SVGImageComponent("./textures/item/demo.svg");
+
+// GIF 图片
+const gifImage = new GIFImageComponent("./textures/item/demo.gif");
+```
+
+#### 图像组件类型说明
+
+| 类名 | 支持格式 | 说明 |
+|------|----------|------|
+| `PNGImageComponent` | `.png` | PNG 图像，适合图标和透明图像 |
+| `JPGImageComponent` | `.jpg`, `.jpeg` | JPEG 图像，适合照片 |
+| `SVGImageComponent` | `.svg`, `.xml` | SVG 矢量图像 |
+| `GIFImageComponent` | `.gif` | GIF 动画图像 |
+
+---
+
+### ComponentType
+类型导出模块，提供组件的类型定义
+
+```typescript
+import * as ComponentType from "@mbler/mcx-core/ComponentType";
+
+// ItemComponentType - 物品组件类型定义
+// BlockComponentType - 方块组件类型定义
+// EntityComponentType - 实体组件类型定义
+```

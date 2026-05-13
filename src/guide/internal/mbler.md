@@ -10,12 +10,19 @@ npm i mbler --save
 
 ### 导入
 
+Mbler 从 `0.2.4-rc.6` 版本开始支持模块化导入：
+
 ```javascript
 // esmodule
-import * as mbl from "mbler";
+import * as mbler from "mbler";
+
+// 构建模块入口 (推荐) - 包含 Build、build、watch 等构建相关 API
+import * as Build from "mbler/build";
 ```
 
 ## 总览
+
+### 主入口 `mbler`
 
 ```javascript
 require("mbler");
@@ -54,6 +61,26 @@ require("mbler");
   i18n: [Object: null prototype] { default: {} }
 }*/
 ```
+
+### 构建模块入口 `mbler/build`
+
+从 `0.2.4-rc.6` 版本开始，提供独立的构建模块入口：
+
+```javascript
+require("mbler/build");
+/* return: {
+  default: [class Build],
+  Build: [class Build],
+  build: [Function: build],
+  watch: [Function: watch],
+  McxTsc: [Function: McxTsc]
+}*/
+```
+
+**使用场景：**
+- 当你只需要构建功能而不需要 CLI 或其他功能时
+- 用于封装自定义的构建流程
+- 减少不必要的依赖导入
 
 ## API
 

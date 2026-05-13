@@ -1,9 +1,36 @@
 # 在 Mbler 中的 mcx DSL
 ## 简介
-mcx 是Mbler中为方便书写的一种类似Vue的DSL，目前才起步几个月，许多功能不完善，以下为还没写完的地方  
- - vscode 悬浮文档，格式化，定义跳转，代码折叠，错误提示
- - 在ts中导入mcx没有类型(准备用volar实现，有点复杂(volar是动态修改typescript的代码))
- - Component MCX  
+mcx 是Mbler中为方便书写的一种类似Vue的DSL。
+
+### 已完成的功能
+- **VSCode 扩展**：支持语法高亮、代码补全、悬浮文档、格式化
+- **TypeScript 类型支持**：通过 `@mbler/mcx-language-server` 提供 LSP 支持
+- **Component MCX**：支持 Item、Block、Entity 组件定义
+- **UI MCX**：用户界面构建
+- **Event MCX**：事件处理
+
+### 安装 @mbler/mcx-core
+
+```bash
+npm install @mbler/mcx-core --save
+```
+
+### 组件 API 概览
+
+`@mbler/mcx-core` 导出以下组件类：
+
+```javascript
+import {
+  ItemComponent,
+  BlockComponent,
+  EntityComponent,
+  PNGImageComponent,
+  JPGImageComponent,
+  SVGImageComponent,
+  GIFImageComponent,
+  ComponentType
+} from "@mbler/mcx-core";
+```
 
 ## 使用
 

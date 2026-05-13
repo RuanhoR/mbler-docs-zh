@@ -1,4 +1,17 @@
 # Mbler 命令行用法
+
+## 模块导入说明
+
+Mbler 从 `0.2.4-rc.6` 版本开始支持模块化导入：
+
+```javascript
+// 主入口 - 包含 CLI 和核心类型
+import * as mbler from "mbler";
+
+// 构建模块 - 包含 Build、build、watch 等构建相关 API
+import * as Build from "mbler/build";
+```
+
 ## `c` 命令
 介绍：切换/查看工作目录  
 用法：mbler c [?:dir]  
