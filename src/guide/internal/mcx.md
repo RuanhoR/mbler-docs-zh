@@ -113,7 +113,7 @@ class CompileError extends Error {
 
 ---
 
-### Compiler compileMCXFn
+### Compiler#compileMCXFn
 
 将 MCX 源文件转成构建 IR。
 
@@ -129,7 +129,7 @@ function compileMCXFn(mcxCode: string): MCXCompileData;
 
 ---
 
-### Compiler compileJSFn
+### Compiler#compileJSFn
 
 编译 JavaScript 代码。
 
@@ -145,7 +145,7 @@ function compileJSFn(jsCode: string): JsCompileData;
 
 ---
 
-## plugin
+### plugin
 
 生成 Rollup 语言扩展。
 
@@ -161,7 +161,7 @@ function mcxPlugin(options: CompileOpt): Plugin;
 
 ---
 
-## transform
+### transform
 
 将 MCX 转换为 JavaScript。
 
@@ -183,17 +183,108 @@ async function transform(
 
 ---
 
-## utils
+### # utils
 
-工具类。
+工具类，提供文件系统操作和类型验证等功能。
 
 ```typescript
 class McxUtils {
-  static resolvePath(base: string, relative: string): string;
-  static normalizeMCX(code: string): string;
-  // ... other utilities
+  static FileExsit(path: string): Promise<boolean>;
+  static readFile(filePath: string, opt?: ReadFileOpt): Promise<string | object>;
+  static sleep(time: number): Promise<void>;
+  static TypeVerify(obj: any, types: TypeVerifyBody): boolean;
+  static AbsoluteJoin(baseDir: string, inputPath: string): string;
 }
 ```
+
+#### utils#FileExsit
+
+检查文件是否存在。
+
+```typescript
+static FileExsit(path: string): Promise<boolean>;
+```
+
+**参数：**
+- `path: string` - 文件路径
+
+**返回值：**
+- `Promise<boolean>` - 文件是否存在
+
+---
+
+#### utils#readFile
+
+读取文件内容，支持返回 string 或 object，带重试机制。
+
+```typescript
+static readFile(
+  filePath: string,
+  opt?: ReadFileOpt
+): Promise<string | object>;
+```
+
+**参数：**
+- `filePath: string` - 文件路径
+- `opt?: ReadFileOpt` - 配置选项
+  - `delay?: number` - 重试延迟（默认 200ms）
+  - `maxRetries?: number` - 最大重试次数（默认 3）
+  - `want?: 'string' | 'object'` - 返回类型（默认 'string'）
+
+**返回值：**
+- `Promise<string | object>` - 文件内容
+
+---
+
+#### utils#sleep
+
+延迟执行。
+
+```typescript
+static sleep(time: number): Promise<void>;
+```
+
+**参数：**
+- `time: number` - 延迟时间（毫秒）
+
+**返回值：**
+- `Promise<void>`
+
+---
+
+#### utils#TypeVerify
+
+在运行时进行对象类型验证。
+
+```typescript
+static TypeVerify(obj: any, types: TypeVerifyBody): boolean;
+```
+
+**参数：**
+- `obj: any` - 要验证的对象
+- `types: TypeVerifyBody` - 类型定义，如 `{ name: 'string', age: 'number' }`
+
+**返回值：**
+- `boolean` - 是否通过验证
+
+---
+
+#### utils#AbsoluteJoin
+
+拼接路径，如果是绝对路径则直接返回，否则与基础目录拼接。
+
+```typescript
+static AbsoluteJoin(baseDir: string, inputPath: string): string;
+```
+
+**参数：**
+- `baseDir: string` - 基础目录
+- `inputPath: string` - 输入路径
+
+**返回值：**
+- `string` - 绝对路径
+
+---
 
 ### ItemComponent
 用于创建物品 JSON 组件

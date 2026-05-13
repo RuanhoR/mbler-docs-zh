@@ -38,7 +38,6 @@ import * as Build from "mbler/build";
 Build.Build; // 新的 Build 类
 Build.build; // 新的 build 函数
 ```
-
 :::
 
 ## 总览
@@ -87,7 +86,7 @@ require("mbler/build");
 
 ## mbler
 
-### mbler cli
+### mbler#cli
 
 运行一个 cli 服务，解析当前 cli 参数。
 
@@ -103,7 +102,7 @@ function cli(): Promise<void>;
 
 ---
 
-### mbler defineConfig
+### mbler#defineConfig
 
 定义 Mbler 配置文件类型，用于类型提示。
 
@@ -121,20 +120,9 @@ function defineConfig(config: MblerConfigData): MblerConfigData;
 
 ---
 
-### mbler cli
-
-运行一个cli服务，解析当前cli参数  
-直接调用，无参数
-
-```typescript
-function cli(): Promise<void>;
-```
-
----
-
 ## Types
 
-### Types LanguageNames
+### Types#LanguageNames
 
 支持的语言名称列表。
 
@@ -144,36 +132,22 @@ const LanguageNames: ["zh", "en"];
 
 ---
 
-### Types cmdList
+### Types#cmdList
 
 可用命令列表。
 
 ```typescript
 const cmdList: readonly [
-  "c",
-  "work",
-  "help",
-  "h",
-  "init",
-  "version",
-  "build",
-  "watch",
-  "lang",
-  "set-work-dir",
-  "publish",
-  "unpublish",
-  "install",
-  "uninstall",
-  "login",
-  "profile",
-  "view",
-  "config",
+  "c", "work", "help", "h", "init", "version",
+  "build", "watch", "lang", "set-work-dir",
+  "publish", "unpublish", "install", "uninstall",
+  "login", "profile", "view", "config"
 ];
 ```
 
 ---
 
-### Types templateMblerConfig
+### Types#templateMblerConfig
 
 默认配置模板。
 
@@ -183,7 +157,7 @@ const templateMblerConfig: MblerConfigData;
 
 ---
 
-### Types CliParam
+### Types#CliParam
 
 CLI 参数接口。
 
@@ -201,7 +175,7 @@ interface CliParam {
 
 ---
 
-### Types MblerConfigData
+### Types#MblerConfigData
 
 配置文件数据接口。
 
@@ -231,7 +205,7 @@ interface MblerConfigData {
 
 ---
 
-### Types MblerConfigOutdir
+### Types#MblerConfigOutdir
 
 输出目录配置接口。
 
@@ -251,7 +225,7 @@ interface MblerConfigOutdir {
 
 ---
 
-### Types MblerConfigScript
+### Types#MblerConfigScript
 
 脚本配置接口。
 
@@ -273,7 +247,7 @@ interface MblerConfigScript {
 
 ---
 
-### Types MblerBuildConfig
+### Types#MblerBuildConfig
 
 构建配置接口。
 
@@ -299,7 +273,7 @@ interface MblerBuildConfig {
 
 ---
 
-### Types ManifestData
+### Types#ManifestData
 
 清单数据接口。
 
@@ -338,7 +312,7 @@ interface ManifestData {
 
 ## commander
 
-### commander Input
+### commander#Input
 
 工具类：提供控制台交互功能，比如高亮菜单渲染、交互式选择等。
 
@@ -346,13 +320,11 @@ interface ManifestData {
 class Input {
   static render(arr: string[], index: number): string;
   static select<T extends Array<any>>(tip: string, arr: T): Promise<T[number]>;
-  static use(
-    task: (name: string, ctrl: boolean, alt: boolean, raw: string) => void,
-  ): void;
+  static use(task: (name: string, ctrl: boolean, alt: boolean, raw: string) => void): void;
 }
 ```
 
-#### commander Input render
+#### commander#Input#render
 
 渲染菜单字符串，高亮选中项。
 
@@ -371,7 +343,7 @@ static render(arr: string[], index: number): string;
 
 ---
 
-#### commander Input select
+#### commander#Input#select
 
 交互式菜单选择。
 
@@ -390,7 +362,7 @@ static select<T extends Array<any>>(tip: string, arr: T): Promise<T[number]>;
 
 ---
 
-#### commander Input use
+#### commander#Input#use
 
 注册全局按键回调。
 
@@ -406,14 +378,14 @@ static use(task: (name: string, ctrl: boolean, alt: boolean, raw: string) => voi
 
 ---
 
-### commander click
+### commander#click
 
 等待某个按键被按下。
 
 ```typescript
 function click(
   name: string,
-  options?: { ctrl?: boolean; alt?: boolean },
+  options?: { ctrl?: boolean; alt?: boolean }
 ): Promise<void>;
 ```
 
@@ -428,7 +400,7 @@ function click(
 
 ---
 
-### commander onEnd
+### commander#onEnd
 
 注册进程退出时的回调任务。
 
@@ -446,7 +418,7 @@ function onEnd(task: () => void): void;
 
 ## i18n
 
-### i18n default
+### i18n#default
 
 国际化模块的默认导出。
 
@@ -461,7 +433,7 @@ interface i18n extends language {
 
 ---
 
-### i18n Lang
+### i18n#Lang
 
 语言管理类。
 
@@ -473,7 +445,7 @@ class Lang {
 }
 ```
 
-#### i18n Lang init
+#### i18n#Lang#init
 
 初始化语言设置。
 
@@ -483,7 +455,7 @@ init(): void;
 
 ---
 
-#### i18n Lang set
+#### i18n#Lang#set
 
 设置当前语言。
 
@@ -497,7 +469,7 @@ set(newLang: "zh" | "en"): void;
 
 ---
 
-#### i18n Lang get
+#### i18n#Lang#get
 
 获取当前语言配置。
 
@@ -513,7 +485,7 @@ get(): language;
 
 ## Build (mbler/build)
 
-### Build build
+### Build#build
 
 进行一次构建。
 
@@ -532,7 +504,7 @@ function build(cliParam: CliParam, work: string): Promise<number>;
 
 ---
 
-### Build watch
+### Build#watch
 
 启动监听模式，文件变化时自动重新构建。
 
@@ -551,7 +523,7 @@ function watch(cliParam: CliParam, work: string): Promise<number>;
 
 ---
 
-### Build Build
+### Build#Build
 
 构建类，提供更细粒度的构建控制。
 
@@ -577,7 +549,7 @@ class Build {
 }
 ```
 
-#### Build Build constructor
+#### Build#Build#constructor
 
 ```typescript
 constructor(
@@ -597,7 +569,7 @@ constructor(
 
 ---
 
-#### Build Build start
+#### Build#Build#start
 
 开始构建。
 
@@ -611,7 +583,7 @@ start(): Promise<void>;
 
 ---
 
-#### Build Build watch
+#### Build#Build#watch
 
 启动监听模式。
 
@@ -625,7 +597,7 @@ watch(): Promise<null | undefined>;
 
 ---
 
-#### Build Build getWatchers
+#### Build#Build#getWatchers
 
 获取监听器句柄。
 
@@ -639,7 +611,7 @@ getWatchers(): { rollup: any; chokidar: any } | null;
 
 ---
 
-#### Build Build closeWatchers
+#### Build#Build#closeWatchers
 
 关闭监听器。
 
@@ -649,7 +621,7 @@ closeWatchers(): void;
 
 ---
 
-### Build McxTsc
+### Build#McxTsc
 
 MCX TypeScript 编译器。
 
