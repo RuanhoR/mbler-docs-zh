@@ -1,0 +1,147 @@
+# mbler.config.js
+
+`mbler.config.js` 是 Mbler 项目的配置文件，使用 ES Module 格式，放在项目根目录。
+
+## 基本结构
+
+```js
+import { defineConfig } from "mbler";
+
+export default defineConfig({
+  description: "我的 Addon",
+  mcVersion: "1.21.100",
+  script: {
+    lang: "ts",
+    main: "index.ts",
+  },
+  minify: false,
+});
+```
+
+## 配置项
+
+### `name` 和 `version`
+
+::: tip
+`name` 和 `version` 从项目根目录的 `package.json` 中读取，无需在 `mbler.config.js` 中配置。
+:::
+
+- `name` — Addon 名称，必须符合 `@scope/name` 格式（如 `@ruanhor/my-addon`）
+- `version` — Addon 版本号（如 `0.0.1-beta`）
+
+### `description`
+
+**必填。** Addon 的简短描述，会写入生成的 `manifest.json`。
+
+- 类型：`string`
+- 示例：`"我的第一个 Minecraft Addon"`
+
+### `mcVersion`
+
+**必填。** 目标 Minecraft 版本。用于生成 manifest 中的 `min_engine_version` 字段以及解析 `@minecraft/server` 依赖版本。
+
+- 类型：`string`
+- 示例：`"1.21.100"`
+
+### `script`
+
+脚本相关配置。
+
+- 类型：`object`
+- 属性：
+  - `main` — 入口脚本文件（相对于 `behavior/scripts/`）
+  - `lang` — 脚本语言：`"js"`、`"ts"` 或 `"mcx"`
+  - `ui` — 是否使用 `@minecraft/server-ui`（默认 `false`）
+  - `UseBeta` — 是否使用 Beta API（默认 `false`）
+
+```js
+script: {
+  lang: "ts",
+  main: "index.ts",
+  ui: true,
+}
+```
+
+### `outdir`
+
+自定义输出目录。未设置时的默认值：
+- `behavior` → `dist/dep`
+- `resources` → `dist/res`
+- `dist`（发布压缩包）→ `dist-pkg`
+
+```js
+outdir: {
+  behavior: "./dist/behavior_pack",
+  resources: "./dist/resource_pack",
+  dist: "./dist/release",
+}
+```
+
+### `minify`
+
+是否压缩打包后的脚本输出。
+
+- 类型：`boolean`
+- 默认值：`false`
+
+### `build`
+
+高级构建配置。
+
+```js
+build: {
+  rollupPlugins: [],
+  rollupExternal: ["some-lib"],
+  cache: "auto",
+  cachePath: "mbler/rolldown.bin",
+  bundle: true,
+  onStart: (ctx) => { console.log("构建开始"); },
+  onEnd: (ctx) => { console.log("构建结束"); },
+  onWarn: (ctx, warning) => { console.warn(warning); },
+}
+```
+
+#### `build.rollupPlugins`
+
+额外的 Rolldown 插件。
+
+- 类型：`Plugin[]`
+
+#### `build.rollupExternal`
+
+标记为外部（不打包）的额外模块名。
+
+- 类型：`string[]`
+
+#### `build.cache`
+
+Rolldown 构建缓存模式。
+
+- 类型：`"none" | "memory" | "file" | "filesystem" | "auto"`
+- 默认值：`"auto"`（使用文件缓存）
+
+#### `build.cachePath`
+
+缓存文件的自定义路径。
+
+- 类型：`string`
+- 默认值：`mbler/rolldown.bin`（相对于项目根目录）
+
+#### `build.bundle`
+
+是否将所有代码打包为单个输出文件（`true`）或使用代码分割（`false`）。
+
+- 类型：`boolean`
+- 默认值：`true`
+
+#### `build.onStart`
+
+构建开始前的回调。
+
+#### `build.onEnd`
+
+构建完成后的回调。
+
+#### `build.onWarn`
+
+构建警告时的回调。

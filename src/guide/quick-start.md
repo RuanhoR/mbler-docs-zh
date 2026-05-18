@@ -53,7 +53,7 @@ Using the Beta API? (y/n): y
 
 其中，资源和行为可以包含原始插件包的 JSON 和其他内容。
 
-在`mbler build`(或`npm run build`)之后，它会被生成为一个额外的包，你可以在`mbler.config.json`中设置 outdir 为 MC Bedrock 的行为包/资源包路径，以便实时测试。
+在`mbler build`(或`npm run build`)之后，它会被生成为一个额外的包，你可以在`mbler.config.js`中设置 outdir 为 MC Bedrock 的行为包/资源包路径，以便实时测试。
 接下来干什么？
 
 - [学习DSL](./mcx)

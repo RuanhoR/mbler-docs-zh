@@ -21,6 +21,10 @@ export const sidebar: ThemeConfig["sidebar"] = {
           text: "命令使用",
         },
         {
+          link: "/guide/mbler-config",
+          text: "mbler.config.js",
+        },
+        {
           link: "/guide/mcx",
           text: "使用mcx创建项目(Beta)",
         },
