@@ -6,7 +6,7 @@ MCX 提供 VSCode 扩展来提供更好的开发体验。
 
 ### 方式一：从 VSCode 市场安装
 
-在 VSCode 扩展市场中搜索 `mcx.language.support` 并安装。
+在 VSCode 扩展市场中搜索 `ruanhor.mcx-vscode-client` 并安装。
 
 ### 方式二：使用 Mbler 自动配置
 
@@ -33,7 +33,9 @@ VSCode 扩展提供以下功能：
 扩展提供以下补全功能：
 
 #### MCX 标签补全
+
 当输入 `<` 时触发，提供以下标签：
+
 - `script` - 脚本块
 - `Event` - 事件定义块
 - `Component` - 组件定义块
@@ -46,14 +48,18 @@ VSCode 扩展提供以下功能：
 - `entity` - 实体定义
 
 #### 属性补全
+
 在标签内输入时触发，提供常用属性：
+
 - `id` - 元素唯一标识符
 - `lang` - 脚本语言 (ts/js)
 - `@before` - 前置事件钩子
 - `@after` - 后置事件钩子
 
 #### 脚本块补全
+
 在 `<script>` 块内提供：
+
 - **import 补全**：`Event`, `createApp`
 - **路径补全**：`"./event"`, `"./events"`
 - **Minecraft 事件补全**：
@@ -79,6 +85,7 @@ VSCode 扩展提供以下功能：
 悬停在标签或属性上时显示详细文档：
 
 #### 标签文档
+
 - **`<script>`**：脚本块，用于嵌入 TypeScript/JavaScript 代码
   - 属性：`lang`, `id`, `@before`, `@after`
   - 语言：`ts`, `js`
@@ -90,6 +97,7 @@ VSCode 扩展提供以下功能：
   - 属性：`id`
 
 #### 属性文档
+
 - **`id`**：元素的唯一标识符
 - **`lang`**：脚本语言规范 (`ts` 或 `js`)
 - **`@before`** / **`@after`**：事件钩子，在主逻辑前后执行代码
@@ -105,11 +113,13 @@ VSCode 扩展提供以下功能：
 ### # 语言服务器集成
 
 扩展会自动启动语言服务器客户端，提供：
+
 - 语义分析
 - 类型检查
 - 错误诊断
 
 #### 命令
+
 - **`mcx.restart.language`**：重启语言服务器
 
 在命令面板 (Ctrl+Shift+P) 中输入 `MCX: Restart Language Server` 可重启语言服务器。
@@ -155,12 +165,12 @@ import {
 } from "@mbler/mcx-server";
 ```
 
-| 导出 | 类型 | 说明 |
-|------|------|------|
-| `MCXVirtualCode` | `class` | MCX 虚拟代码类 |
+| 导出                      | 类型       | 说明              |
+| ------------------------- | ---------- | ----------------- |
+| `MCXVirtualCode`          | `class`    | MCX 虚拟代码类    |
 | `createMCXLanguagePlugin` | `function` | 创建 MCX 语言插件 |
-| `createMCXVirtualCode` | `function` | 创建 MCX 虚拟代码 |
-| `MCXLanguagePlugin` | `type` | 语言插件类型定义 |
+| `createMCXVirtualCode`    | `function` | 创建 MCX 虚拟代码 |
+| `MCXLanguagePlugin`       | `type`     | 语言插件类型定义  |
 
 #### createMCXLanguagePlugin
 
@@ -168,17 +178,20 @@ import {
 
 ```typescript
 function createMCXLanguagePlugin(
-  ts: typeof import("typescript")
+  ts: typeof import("typescript"),
 ): MCXLanguagePlugin;
 ```
 
 **参数：**
+
 - `ts: typeof import("typescript")` - TypeScript 模块
 
 **返回值：**
+
 - `MCXLanguagePlugin` - MCX 语言插件实例
 
 **使用示例：**
+
 ```typescript
 import * as ts from "typescript";
 import { createMCXLanguagePlugin } from "@mbler/mcx-server";
