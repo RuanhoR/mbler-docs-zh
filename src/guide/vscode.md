@@ -211,29 +211,3 @@ mcx-language-server
 ```
 
 ---
-
-## TSPlugin
-
-`@mbler/mcx-ts-plugin` 提供 TypeScript 插件，用于增强 TypeScript 对 mcx 文件的类型检查。
-
-### 安装
-
-```bash
-npm install @mbler/mcx-ts-plugin --save-dev
-```
-
-### 配置
-
-在 `tsconfig.json` 中配置：
-
-```json
-{
-  "compilerOptions": {
-    "plugins": [
-      {
-        "name": "@mbler/mcx-ts-plugin"
-      }
-    ]
-  }
-}
-```
