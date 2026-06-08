@@ -189,7 +189,7 @@ async function transform(
 
 ```typescript
 class McxUtils {
-  static FileExsit(path: string): Promise<boolean>;
+  static FileExist(path: string): Promise<boolean>;
   static readFile(filePath: string, opt?: ReadFileOpt): Promise<string | object>;
   static sleep(time: number): Promise<void>;
   static TypeVerify(obj: any, types: TypeVerifyBody): boolean;
@@ -197,12 +197,12 @@ class McxUtils {
 }
 ```
 
-#### utils#FileExsit
+#### utils#FileExist
 
 检查文件是否存在。
 
 ```typescript
-static FileExsit(path: string): Promise<boolean>;
+static FileExist(path: string): Promise<boolean>;
 ```
 
 **参数：**
