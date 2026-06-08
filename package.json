@@ -1,5 +1,5 @@
 {
-  "name": "mbler-docs",
+  "name": "mbler-docs-zh",
   "version": "0.0.3",
   "scripts": {
     "docs:dev": "pnpm vitepress dev",
