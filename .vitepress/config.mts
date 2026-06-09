@@ -32,6 +32,10 @@ export const sidebar: ThemeConfig["sidebar"] = {
           text: "Vscode 扩展",
           link: "/guide/vscode",
         },
+        {
+          text: "MNX 市场",
+          link: "/guide/mnx",
+        },
       ],
     },
     {

@@ -119,6 +119,6 @@ mbler work ./project
 `mbler config get <key>`  
 `mbler config set <key> <value>`  
 `mbler config point `  
-`mbler config point <new confog file point>`
+`mbler config point <new config file point>`
 
 常见Key: token(存储pmnx token)
