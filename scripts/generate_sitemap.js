@@ -2,12 +2,12 @@ import fs from "fs/promises"
 import path from "path"
 import xml from "xml"
 const baseURL = "https://zh-mbler-docs.ruanhor.dpdns.org/"
-const exincludePath = [
+const excludePath = [
   path.resolve(".vitepress/dist/404.html")
 ]
 async function getCol(dirPath, arr = []) {
   const stat = await fs.stat(dirPath);
-  if (exincludePath.includes(dirPath)) {
+  if (excludePath.includes(dirPath)) {
     return arr;
   }
   if (stat.isFile()) {
