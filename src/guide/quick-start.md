@@ -21,35 +21,13 @@ pnpm install -g mbler
 mbler version
 ```
 
-安装完成后，您就可以开始下一步
-
 ## 创建一个项目
 
-MBLER 有一个可以传递的工作目录上下文(可以用`mbler set-work-dir off`关闭)
-
 ```bash
-mbler c .
+pnpm create mbler
 ```
 
-将工作目录切换到当前目录。
-
-```bash
-mbler init
-```
-
-命令行输出(可用 `mbler lang zh`调整cli的语言)
-
-```
-Project Name: test
-Project Description: test
-Select project language: (press b to confirm, n key to select next)
-ts js mcx
-Initializing dependencies? (y/n): (press b to confirm, n key to select next)
-no pnpm npm
-Using UI modules? (y/n): y
-Initialize GIT Repository? (y/n): y
-Using the Beta API? (y/n): y
-```
+交互式输入内容，大功告成！
 
 其中，资源和行为可以包含原始插件包的 JSON 和其他内容。
 
