@@ -132,3 +132,76 @@ mbler version
 mbler login $MNX_TOKEN
 mbler publish -tag latest
 ```
+
+---
+
+## Mbler 如何解析 SAPI 版本
+
+当你在 `mbler.config.js` 中设置 `mcVersion: "1.21.100"` 时，Mbler 需要找到与目标 Minecraft 版本对应的 `@minecraft/server` 和 `@minecraft/server-ui` npm 包版本。此解析过程在 `src/build/sapi.ts` 中实现。
+
+### 问题背景
+
+Minecraft Bedrock 的 Script API（`@minecraft/server`）会向 npm 发布许多版本，每个版本都在版本字符串中嵌入了目标 Minecraft 版本。例如：
+
+```
+2.1.0-beta.1.21.100-stable   → Minecraft 1.21.100
+2.0.0-beta.1.21.60-stable    → Minecraft 1.21.60
+2.5.0-beta.1.21.120-preview  → Minecraft 1.21.120（预览版）
+```
+
+版本字符串格式为：`<sapi-version>-<channel>.<embedded-mc-version>-<stability>`。
+
+### 解析算法
+
+1. **获取 npm 注册表**：Mbler 从 `https://registry.npmjs.com` 获取 `@minecraft/server` 和 `@minecraft/server-ui` 的所有版本。
+
+2. **提取 MC 版本**：对每个 npm 版本，使用正则表达式提取嵌入的 Minecraft 版本：
+   ```
+   /-(?:rc|beta)(?:\.[^-.]+)*?\.((?:\d+\.){2}\d+)/
+   ```
+   这个正则匹配类似 `beta.1.21.100` 的模式，并捕获 `1.21.100`。
+
+3. **分类发布版本**：每个条目被分类为：
+   - **正式版（稳定）** — 版本字符串包含 `-stable`
+   - **测试版（预览）** — 其他所有版本（候选发布版、预览版等）
+
+4. **构建版本映射表**：结果是一个查找表，将每个 Minecraft 版本映射到其最新的正式版和测试版 SAPI 版本：
+
+   ```json
+   {
+     "server": {
+       "1.21.60": { "formal": "2.0.0-beta.1.21.60-stable", "beta": "" },
+       "1.21.100": { "formal": "2.1.0-beta.1.21.100-stable", "beta": "" },
+       "1.21.120": { "formal": "", "beta": "2.5.0-beta.1.21.120-preview" }
+     }
+   }
+   ```
+
+5. **缓存**：映射表保存到 `~/.mbler/_sapi_version.json`，供离线重复使用。调用 `refresh()` 可更新缓存。
+
+6. **查找**（`generateVersion`）：
+   - 首先尝试**精确匹配** `mcVersion`
+   - 如果没有精确匹配，查找**最接近的更低版本**（例如，如果你请求 `1.21.110` 但只有 `1.21.100` 存在，则回退到 `1.21.100`）
+   - 如果没有更低的版本，则使用**最早可用**的版本
+   - 默认返回正式（稳定）版本，如果设置了 `isBeta` 则返回测试版
+   - 如果请求的渠道为空，则回退到另一个渠道
+
+7. **版本缩短**（`evalVersion`）：返回的版本会被缩短以用于 `manifest.json` 依赖。例如：
+   ```
+   "2.1.0-beta.1.21.100-stable" → "2.1.0-beta"
+   ```
+   只保留预发布标签的前两个段。
+
+### 调试 SAPI 解析
+
+要查看 Mbler 为你的项目解析了哪个版本，运行：
+
+```bash
+BUILD_MODULE=release mbler build
+```
+
+解析后的版本会出现在生成的 `manifest.json` 的 `dependencies` 中。你也可以直接查看缓存文件：
+
+```bash
+cat ~/.mbler/_sapi_version.json
+```
