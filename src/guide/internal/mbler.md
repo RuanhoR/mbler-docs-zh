@@ -182,19 +182,20 @@ interface CliParam {
 ```typescript
 interface MblerConfigData {
   name: string;
+  displayName?: string;
   description: string;
   version: string;
   mcVersion: string | string[];
   outdir?: MblerConfigOutdir;
   script?: MblerConfigScript;
-  minify?: boolean;
+  minify?: boolean | 'oxc' | 'terser' | 'esbuild';
   build?: MblerBuildConfig;
 }
 ```
 
 **属性：**
-
-- `name: string` - 项目名称（必填）
+- `name: string` - 包名（必填），用于 UUID 生成和 MNX 发布
+- `displayName?: string` - 可选，在 manifest.json 中显示的名称；未设置时回退使用 `name`
 - `description: string` - 项目描述（必填）
 - `version: string` - 项目版本（必填）
 - `mcVersion: string | string[]` - Minecraft 版本（必填）

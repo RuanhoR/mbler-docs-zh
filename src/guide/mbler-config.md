@@ -26,8 +26,18 @@ export default defineConfig({
 `name` 和 `version` 从项目根目录的 `package.json` 中读取，无需在 `mbler.config.js` 中配置。
 :::
 
-- `name` — Addon 名称，必须符合 `@scope/name` 格式（如 `@ruanhor/my-addon`）
+- `name` — Addon 包名，必须符合 `@scope/name` 格式（如 `@ruanhor/my-addon`）。用于 UUID 生成和 MNX 发布。
+- `displayName` — 可选。在生成的 `manifest.json` 中显示的人类可读名称。如果未设置，则回退使用 `name`。
 - `version` — Addon 版本号（如 `0.0.1-beta`）
+
+```js
+export default defineConfig({
+  name: "@ruanhor/my-addon",
+  displayName: "我的超赞 Addon",
+  version: "0.0.1",
+  // ...
+});
+```
 
 ### `description`
 
