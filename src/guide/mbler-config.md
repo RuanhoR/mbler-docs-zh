@@ -79,10 +79,11 @@ outdir: {
 
 ### `minify`
 
-是否压缩打包后的脚本输出。
+打包后脚本的压缩引擎。
 
-- 类型：`boolean`
+- 类型：`boolean | 'oxc' | 'terser' | 'esbuild'`
 - 默认值：`false`
+- 设置为 `true` 时使用默认压缩器。设置为特定引擎名称（`'oxc'`、`'terser'`、`'esbuild'`）可选择特定的压缩工具。
 
 ### `build`
 
@@ -109,16 +110,17 @@ build: {
 
 #### `build.rollupExternal`
 
-标记为外部（不打包）的额外模块名。
+标记为外部（不打包）的额外模块名。当你希望某些依赖保留在打包之外时使用。
 
 - 类型：`string[]`
+- 示例：`["@some-org/some-lib"]`
 
 #### `build.cache`
 
 Rolldown 构建缓存模式。
 
 - 类型：`"none" | "memory" | "file" | "filesystem" | "auto"`
-- 默认值：`"auto"`（使用文件缓存）
+- 默认值：`"auto"`（解析为 `"file"` 缓存）
 
 #### `build.cachePath`
 
@@ -129,7 +131,29 @@ Rolldown 构建缓存模式。
 
 #### `build.bundle`
 
-是否将所有代码打包为单个输出文件（`true`）或使用代码分割（`false`）。
+是否通过 Rolldown 打包脚本。
+
+- 类型：`boolean`
+- 默认值：`true`
+- 当为 `false` 时，脚本将原样复制而不打包
+
+#### `build.outputDir`
+
+编译后脚本在行为包输出中的子目录。
+
+- 类型：`string`
+- 默认值：`"scripts"`
+
+#### `build.outputFilename`
+
+覆盖打包脚本的输出文件名。
+
+- 类型：`string`
+- 默认值：从入口脚本名称派生
+
+#### `build.clean`
+
+是否在每次构建前清理输出目录。
 
 - 类型：`boolean`
 - 默认值：`true`
@@ -138,10 +162,16 @@ Rolldown 构建缓存模式。
 
 构建开始前的回调。
 
+- 类型：`(ctx: MblerConfigData) => void | Promise<void>`
+
 #### `build.onEnd`
 
 构建完成后的回调。
 
+- 类型：`(ctx: MblerConfigData) => void | Promise<void>`
+
 #### `build.onWarn`
 
 构建警告时的回调。
+
+- 类型：`(ctx: MblerConfigData, warning: Error) => void | Promise<void>`

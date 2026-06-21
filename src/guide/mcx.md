@@ -137,4 +137,51 @@ export {
 - Script
   - 必须实现在Component定义的这个导出，否则编译时期会报错
 
-关于 @mbler/mcx-core的组件导出，详见 [MCX 导出对象解析](./internal/mcx)
+关于 @mbler/mcx-core 的组件导出，详见 [MCX 核心 API 参考](./internal/mcx)
+
+### App MCX
+
+App MCX 是附加包的**入口点**。它编排事件 MCX 文件，并在附加包挂载时运行设置逻辑。
+
+示例：
+
+```
+<script>
+import event from "./event.mcx";
+
+export default {
+  app: {
+    event: [event]
+  },
+  setup(ctx) {
+    console.log("附加包已挂载！", ctx);
+  }
+}
+</script>
+```
+
+编译后的输出由 `@mbler/mcx` 中的 `createApp` 使用：
+
+```javascript
+import { createApp } from "@mbler/mcx";
+import { world } from "@minecraft/server";
+import app from "./app.mcx";
+
+const myApp = createApp(app);
+myApp.mount(world);
+```
+
+**工作原理：**
+
+1. App MCX 导入一个或多个事件 MCX 文件
+2. `createApp(app)` 创建 `App` 实例
+3. `app.mount(world)` 将所有导入的事件 MCX 文件加载为 `Event` 对象，传入 `ctx.event`，然后调用 `setup(ctx)`
+4. 在 `setup` 中，你可以调用 `event.subscribe()` 注册所有事件处理器
+
+**App MCX 的结构：**
+
+- 必须导出一个**默认对象**，包含：
+  - `app.event` — 编译后的事件 MCX 模块数组
+  - `setup(ctx)` — 在事件初始化后调用，接收包含 `{ event: Event[] }` 的 `MCXCtx`
+
+运行时 API 请参见 [运行时框架 API](./internal/runtime)。

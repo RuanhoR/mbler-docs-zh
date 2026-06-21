@@ -36,6 +36,10 @@ export const sidebar: ThemeConfig["sidebar"] = {
           text: "MNX 市场",
           link: "/guide/mnx",
         },
+        {
+          text: "故障排除 & 常见问题",
+          link: "/guide/troubleshooting",
+        },
       ],
     },
     {
@@ -46,8 +50,12 @@ export const sidebar: ThemeConfig["sidebar"] = {
           link: "/guide/internal/mbler",
         },
         {
-          text: "Mcx",
+          text: "Mcx 核心",
           link: "/guide/internal/mcx",
+        },
+        {
+          text: "运行时框架",
+          link: "/guide/internal/runtime",
         },
       ],
     },
@@ -91,14 +99,17 @@ export default {
   description: "Mbler Docs",
   srcDir: "src",
   themeConfig: {
+    outline: {
+      level: [1, 2, 3, 4, 5, 6],
+    },
+    search: {
+      provider: 'local',
+    },
     footer: {
       license: {
         text: "MIT License",
         link: "https://opensource.org/licenses/MIT",
       },
-    },
-    outline: {
-      level: [1, 2, 3, 4, 5, 6],
     },
     nav,
     sidebar,

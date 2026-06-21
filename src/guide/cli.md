@@ -75,50 +75,118 @@ mbler work ./project
 
 ## `install` 命令
 
-- 提示：此命令仍在 beta
+> 测试阶段 — 可能发生变化。
 
 用法：
 
-`mbler install @scope/name@version`
+```bash
+mbler install @scope/name@version
+```
 
-如果没有指定版本，使用 `latest`
+如果没有指定版本，则使用最新版本。
 
-从 `pmnx.qzz.io` 下载插件
+从 `pmnx.qzz.io` 下载附加包并复制到 Minecraft 游戏目录（行为包/资源包）。
+
+## `uninstall` 命令
+
+> 测试阶段 — 可能发生变化。
+
+用法：
+
+```bash
+mbler uninstall @scope/name@version
+```
+
+从 Minecraft 游戏目录中移除已安装的附加包。
+
+## `login` 命令
+
+> 测试阶段 — 可能发生变化。
+
+用法：
+
+```bash
+mbler login [token]
+```
+
+向 MNX 市场进行身份验证。如果未提供 token，将以交互方式提示输入。
+
+## `profile` 命令
+
+> 测试阶段 — 可能发生变化。
+
+用法：
+
+```bash
+mbler profile
+```
+
+显示当前登录的用户信息。
 
 ## `publish` 命令
 
-- 提示：此命令仍在 beta
+> 测试阶段 — 可能发生变化。
 
 用法：
 
-`mbler publish -tag :tag_name`
+```bash
+mbler publish -tag :tag_name
+```
 
-发布你的插件
+将你的附加包发布到 MNX 市场。
 
-参数
+选项：
 
-- `tag`：设置标签名称
-- `build`：`skip` 或 `on`，设置是否执行构建执行构建命令
-  将会把 behavior, resources 打包成 zip 并上传到 `pmnx.qzz.io`
+- `-tag` — 版本标签（例如 `latest`、`beta`）
+- `-build` — `skip` 或 `enable`（默认：`enable`），是否在发布前执行构建
 
 ## `unpublish` 命令
 
-- 提示：此命令仍在 beta
+> 测试阶段 — 可能发生变化。
 
 用法：
-`mbler unpublish @scope/name@version`
 
-## `login 命令
+```bash
+mbler unpublish @scope/name@version
+```
 
-提示：此命令仍在 beta
-运行输入pmnx token以登录pmnx账号，使用publish
+从 MNX 市场中移除已发布的版本。
+
+## `view` 命令
+
+> 测试阶段 — 可能发生变化。
+
+用法：
+
+```bash
+mbler view @scope/name
+```
+
+列出 MNX 市场上某个包的所有已发布版本。
 
 ## `config` 命令
 
-用法：
-`mbler config get <key>`  
-`mbler config set <key> <value>`  
-`mbler config point `  
-`mbler config point <new config file point>`
+管理全局 CLI 配置，存储在 `~/.config/.mbler.config.global.cli.json`。
 
-常见Key: token(存储pmnx token)
+用法：
+
+```bash
+mbler config get <key>
+mbler config set <key> <value>
+mbler config point
+mbler config point <new config file path>
+```
+
+常见 key：
+- `token` — 存储 MNX 认证令牌
+
+## `log` 命令
+
+管理 CLI 日志文件（`~/.cache/mbler/latest.log`）。
+
+用法：
+
+```bash
+mbler log point    # 显示日志文件路径
+mbler log clean    # 清空日志文件
+```
