@@ -1,7 +1,7 @@
 import fs from "fs/promises"
 import path from "path"
 import xml from "xml"
-const baseURL = "https://zh-mbler-docs.ruanhor.dpdns.org/"
+const baseURL = "https://zh-d.pmnx.qzz.io/"
 const excludePath = [
   path.resolve(".vitepress/dist/404.html")
 ]
@@ -56,11 +56,11 @@ async function main() {
   })
   const xmlData = {
     urlset: [{
-        _attr: {
-          xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
-        },
+      _attr: {
+        xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
       },
-      ...sitemapDataXml
+    },
+    ...sitemapDataXml
     ]
   }
   const xmlStr = xml(xmlData, {

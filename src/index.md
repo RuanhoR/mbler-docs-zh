@@ -2,7 +2,10 @@
 head:
   - - meta
     - name: msvalidate.01
-      content: 40314416D101CEA118ED086275E4B567
+      content: "40314416D101CEA118ED086275E4B567"
+  - - meta
+    - name: keywords
+      content: "mcbe, dsl, mcx, mbler, mc, build, dev, docs"
 title: Mbler 文档
 description: Minecraft Bedrock Addon开发工具 Mbler文档站
 lang: zh-CN
