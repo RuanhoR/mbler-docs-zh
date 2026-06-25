@@ -72,7 +72,13 @@ require("mbler/build");
   Build: [class Build],
   build: [Function: build],
   watch: [Function: watch],
-  McxTsc: [Function: McxTsc]
+  McxTsc: [Function: McxTsc],
+  Sapi: [Module],
+  BuildCacheManager: [class BuildCacheManager],
+  Progress: [class Progress],
+  generateRelease: [Function: generateRelease],
+  terserPlugin: [Function: terserPlugin],
+  esbuildPlugin: [Function: esbuildPlugin],
 }*/
 ```
 
@@ -141,7 +147,7 @@ const cmdList: readonly [
   "c", "work", "help", "h", "init", "version",
   "build", "watch", "lang", "set-work-dir",
   "publish", "unpublish", "install", "uninstall",
-  "login", "profile", "view", "config"
+  "login", "profile", "view", "config", "log"
 ];
 ```
 
@@ -185,11 +191,11 @@ interface MblerConfigData {
   displayName?: string;
   description: string;
   version: string;
-  mcVersion: string | string[];
+  mcVersion: string;
   outdir?: MblerConfigOutdir;
   script?: MblerConfigScript;
-  minify?: boolean | 'oxc' | 'terser' | 'esbuild';
-  build?: MblerBuildConfig;
+  minify?: 'oxc' | 'terser' | 'esbuild';
+  build?: Partial<MblerBuildConfig>;
 }
 ```
 
@@ -198,11 +204,11 @@ interface MblerConfigData {
 - `displayName?: string` - 可选，在 manifest.json 中显示的名称；未设置时回退使用 `name`
 - `description: string` - 项目描述（必填）
 - `version: string` - 项目版本（必填）
-- `mcVersion: string | string[]` - Minecraft 版本（必填）
+- `mcVersion: string` - Minecraft 版本（必填）
 - `outdir?: MblerConfigOutdir` - 输出目录配置
 - `script?: MblerConfigScript` - 脚本配置
-- `minify?: boolean` - 是否压缩代码
-- `build?: MblerBuildConfig` - 构建配置
+- `minify?: 'oxc' | 'terser' | 'esbuild'` - 压缩引擎（默认：'oxc'）
+- `build?: Partial<MblerBuildConfig>` - 构建配置
 
 ---
 
@@ -254,23 +260,33 @@ interface MblerConfigScript {
 
 ```typescript
 interface MblerBuildConfig {
-  rollupPlugins?: Plugin[];
-  cache?: "auto" | "enable" | "disable";
-  bundle?: boolean;
-  onEnd?: (config: MblerConfigData) => Promise<void>;
-  onStart?: (config: MblerConfigData) => Promise<void>;
-  onWarn?: (config: MblerConfigData, warning: Error) => void;
+  rollupPlugins: Plugin[];
+  rollupExternal: string[];
+  cache: 'none' | 'memory' | 'file' | 'filesystem' | 'auto';
+  cachePath: string;
+  bundle: boolean;
+  clean?: boolean;
+  outputDir: string;
+  outputFilename: string;
+  onEnd: (ctx: MblerConfigData) => void | Promise<void>;
+  onStart: (ctx: MblerConfigData) => void | Promise<void>;
+  onWarn: (ctx: MblerConfigData, warning: Error) => void | Promise<void>;
 }
 ```
 
 **属性：**
 
-- `rollupPlugins?: Plugin[]` - 自定义 Rollup 插件
-- `cache?: "auto" | "enable" | "disable"` - 缓存模式
-- `bundle?: boolean` - 是否打包
-- `onEnd?: (config: MblerConfigData) => Promise<void>` - 构建完成回调
-- `onStart?: (config: MblerConfigData) => Promise<void>` - 构建开始回调
-- `onWarn?: (config: MblerConfigData, warning: Error) => void` - 警告回调
+- `rollupPlugins: Plugin[]` - 自定义 Rollup 插件
+- `rollupExternal: string[]` - 额外外部模块
+- `cache: 'none' | 'memory' | 'file' | 'filesystem' | 'auto'` - 缓存模式
+- `cachePath: string` - 缓存文件路径
+- `bundle: boolean` - 是否通过 Rollup 打包脚本（默认：true）
+- `clean?: boolean` - 构建前清理输出目录（默认：true）
+- `outputDir: string` - 输出子目录（默认：'scripts'）
+- `outputFilename: string` - 强制输出文件名
+- `onEnd: (ctx: MblerConfigData) => void | Promise<void>` - 构建完成回调
+- `onStart: (ctx: MblerConfigData) => void | Promise<void>` - 构建开始回调
+- `onWarn: (ctx: MblerConfigData, warning: Error) => void | Promise<void>` - 警告回调
 
 ---
 
@@ -440,15 +456,16 @@ interface i18n extends language {
 
 ```typescript
 class Lang {
+  currentLang: "zh" | "en";
   init(): void;
-  set(newLang: "zh" | "en"): void;
+  set(newLang: "zh" | "en"): boolean;
   get(): language;
 }
 ```
 
 #### i18n#Lang#init
 
-初始化语言设置。
+初始化语言设置（从 `~/.cache/mbler/lang.db` 读取）。
 
 ```typescript
 init(): void;
@@ -461,12 +478,16 @@ init(): void;
 设置当前语言。
 
 ```typescript
-set(newLang: "zh" | "en"): void;
+set(newLang: "zh" | "en"): boolean;
 ```
 
 **参数：**
 
 - `newLang: "zh" | "en"` - 语言类型
+
+**返回值：**
+
+- `boolean` - 是否设置成功
 
 ---
 
@@ -481,6 +502,65 @@ get(): language;
 **返回值：**
 
 - `language` - 当前语言配置
+
+---
+
+## Logger
+
+日志写入 `~/.cache/mbler/latest.log`。
+
+```typescript
+class Logger {
+  static i(tag: string, msg: string): void;  // INFO
+  static w(tag: string, msg: string): void;  // WARN
+  static e(tag: string, msg: string): void;  // ERROR
+  static d(tag: string, msg: string): void;  // DEBUG
+  static LogFile: string;                     // 当前日志文件路径
+}
+```
+
+---
+
+## UUID
+
+确定性 UUID 生成。
+
+```typescript
+import { fromString } from "mbler"; // 或 from "mbler/uuid"
+
+function fromString(input: string, salt?: string): string;
+```
+
+**参数：**
+
+- `input: string` - 输入字符串
+- `salt?: string` - 可选盐值
+
+**返回值：**
+
+- `string` - 确定性 UUID v4
+
+---
+
+## 工具函数
+
+从主入口导出的工具函数。
+
+```typescript
+function ReadProjectMblerConfig(project: string): Promise<MblerConfigData>;
+function readFileAsJson<T>(filePath: string): Promise<T>;
+function writeJSON(filePath: string, data: unknown): Promise<void>;
+function showText(text: string, needNextLine?: boolean): void;
+function input(tip?: string, show?: boolean): Promise<string>;
+function fileExists(file: string): Promise<boolean>;
+function findReadme(dir: string): Promise<string | null>;
+function join(baseDir: string, inputPath: string): string;
+function stringToNumberArray(str: string): [number, number, number];
+function compareVersion(a: string, b: string): number;
+function isValidVersion(version: string): boolean;
+function runCommand(param: string[], cwd: string, stdio: string): Promise<{ code: number | null; data: string }>;
+function sleep(time: number): Promise<void>;
+```
 
 ---
 
@@ -624,11 +704,93 @@ closeWatchers(): void;
 
 ### Build#McxTsc
 
-MCX TypeScript 编译器。
+MCX TypeScript 编译器（基于 Volar）。
 
 ```typescript
-class McxTsc {
-  constructor();
-  transform(code: string, options?: object): string;
+function McxTsc(tscpath?: string): void;
+```
+
+**参数：**
+
+- `tscpath?: string` - TypeScript 的 tsc.js 路径（默认：`require.resolve('typescript/lib/tsc')`）
+
+**说明：**
+运行带有 MCX 语言支持的 TypeScript 编译器，为 `.mcx` 文件和图片导入提供类型检查。
+
+---
+
+### Build#Sapi
+
+SAPI 版本解析器 — 从 npm 获取 `@minecraft/server` 版本映射。
+
+```typescript
+namespace Sapi {
+  function refresh(): Promise<void>;
+  function generateVersion(
+    module: string,
+    mcVersion: string,
+    isBeta: boolean,
+    withFull: boolean
+  ): string;
 }
+```
+
+---
+
+### Build#BuildCacheManager
+
+增量构建的缓存管理器。
+
+```typescript
+class BuildCacheManager {
+  constructor(baseDir: string, mode?: string, isWatch?: boolean, cachePath?: string);
+  getMode(): string;
+  shouldUseIncrementalBuild(): boolean;
+}
+```
+
+---
+
+### Build#Progress
+
+进度条显示。
+
+```typescript
+class Progress {
+  constructor(max: number);
+  update(current: number): void;
+}
+```
+
+---
+
+### Build#terserPlugin
+
+terser 压缩的 Rollup 插件（需要在项目中安装 `terser`）。
+
+```typescript
+function terserPlugin(baseDir: string): Plugin;
+```
+
+---
+
+### Build#esbuildPlugin
+
+esbuild 压缩的 Rollup 插件（需要在项目中安装 `esbuild`）。
+
+```typescript
+function esbuildPlugin(baseDir: string): Plugin;
+```
+
+---
+
+### Build#generateRelease
+
+将输出目录压缩为 `.mcaddon` 文件。
+
+```typescript
+function generateRelease(build: {
+  outdirs: { behavior: string; resources: string; dist: string };
+  module: 'behavior' | 'resources' | 'all';
+}): Promise<void>;
 ```
