@@ -20,7 +20,7 @@ npm install @mbler/mcx-core --save
 
 ### 组件 API 概览
 
-`@mbler/mcx-core` 导出以下组件类：
+`@mbler/mcx-component` 导出以下组件类：
 
 ```javascript
 import {
@@ -32,7 +32,7 @@ import {
   SVGImageComponent,
   GIFImageComponent,
   ComponentType,
-} from "@mbler/mcx-core";
+} from "@mbler/mcx-component";
 ```
 
 ## 使用
@@ -114,7 +114,7 @@ event.subscribe() // 全部注册，也可以 event.subscribe("EntityHitEntity")
   </items>
 </Component>
 <script>
-import { ItemComponent } from "@mbler/mcx-core"
+import { ItemComponent } from "@mbler/mcx-component"
 const itemComponent = new ItemComponent({
   format: "1.21.100", // 格式版本
   name: "Demo Item",
