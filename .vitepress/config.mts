@@ -81,11 +81,11 @@ const nav: ThemeConfig["nav"] = [
     items: [
       {
         text: "中文",
-        link: "https://zh-mbler-docs.ruanhor.dpdns.org",
+        link: "https://zh-d.pmnx.qzz.io",
       },
       {
         text: "English",
-        link: "https://mbler-docs.ruanhor.dpdns.org",
+        link: "https://en-d.pmnx.qzz.io",
       },
     ],
   },
@@ -103,7 +103,7 @@ export default {
       level: [1, 2, 3, 4, 5, 6],
     },
     search: {
-      provider: 'local',
+      provider: "local",
     },
     footer: {
       license: {
