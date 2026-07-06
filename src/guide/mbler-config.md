@@ -87,6 +87,19 @@ outdir: {
 }
 ```
 
+### `outGameOnDev`
+
+开发时直接将构建结果输出到 Minecraft 游戏目录的 `development_behavior_packs` 和 `development_resource_packs`，省去手动复制步骤。
+
+- 类型：`boolean`
+- 默认值：`false`
+- 启用后会询问游戏目录路径（与 `mbler install` 复用同一套询问逻辑，路径会缓存到全局配置），构建产物直接写入游戏开发包目录
+- 当环境变量 `BUILD_MODULE=release` 时此选项不生效，仍走原有的 `outdir` 配置（以支持发布打包）
+
+```js
+outGameOnDev: true,
+```
+
 ### `minify`
 
 打包后脚本的压缩引擎。
