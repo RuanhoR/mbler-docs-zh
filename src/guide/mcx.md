@@ -51,20 +51,97 @@ MCX 目前分为以下几种
 
 ### UI MCX
 
-示例
+构建游戏内表单，支持两种模式：
+
+- **`<Ui>`** — CustomForm（响应式，Observable 绑定）。需要 `@minecraft/server-ui` >= 2.1。
+- **`<Form>`** — 传统 FormData（ModalFormData / ActionFormData / MessageFormData）。兼容任意版本。
+
+#### 可用标签
+
+标签映射到底层 Minecraft 表单 API 方法：
+
+| 标签 | `<Ui>` (CustomForm) | `<Form type="modal">` (ModalFormData) | `<Form type="action">` (ActionFormData) | `<Form type="message">` (MessageFormData) |
+|------|---------------------|---------------------------------------|----------------------------------------|------------------------------------------|
+| `title` | 构造参数 | `.title()` | `.title()` | `.title()` |
+| `label` | `.label()` | `.label()` | `.label()` | — |
+| `header` | `.header()` | `.header()` | `.header()` | — |
+| `body` | — | `.label()` | `.body()` | `.body()` |
+| `divider` | `.divider()` | `.divider()` | `.divider()` | — |
+| `spacer` | `.spacer()` | — | — | — |
+| `close-button` | `.closeButton()` | — | — | — |
+| `input` / `textField` | `.textField()` | `.textField()` | — | — |
+| `toggle` | `.toggle()` | `.toggle()` | — | — |
+| `dropdown` | `.dropdown()` | `.dropdown()` | — | — |
+| `slider` | `.slider()` | `.slider()` | — | — |
+| `submit` | — | `.submitButton()` | — | — |
+| `button` | `.button()` | — | `.button()` | — |
+| `button-m` | — | — | — | `.button1()` / `.button2()` |
+
+#### 传统表单（非响应式）
 
 ```
-<Ui>
-  <button click="hello">{{ title }}</button>
-</Ui>
+<Form>
+  <title>Hello</title>
+  <label>欢迎, {{ playerName }}!</label>
+  <button click="close">关闭</button>
+</Form>
 <script>
-  export const hello = function() {
-    console.log("Hello world")
-  }
+  export const prop = ["playerName"];
+  export function close() { /* 关闭 */ }
 </script>
 ```
 
-其他文件使用：
+#### CustomForm 响应式模式（Setup）
+
+```
+<Ui setup>
+  <title>设置</title>
+  <input>{{ name }}</input>
+  <toggle>{{ enabled }}</toggle>
+  <button click="save">保存</button>
+</Ui>
+<script>
+import { onMounted } from "@mbler/mcx";
+
+const name = defineProp("Player")
+const enabled = defineProp(true)
+
+onMounted(() => { /* 每次显示执行 */ })
+
+function save() { /* name.value 获取当前值 */ }
+</script>
+```
+
+#### 显式表单类型
+
+覆盖自动表单类型检测，添加 `type` 属性：
+
+```
+<Ui type="action">
+  <button click="hello">{{ title }}</button>
+</Ui>
+
+<Form type="modal">
+  <input>{{ name }}</input>
+</Form>
+```
+
+支持的类型：`modal`、`action`、`message`。
+
+#### For 循环
+
+使用 `in` 或 `of` 遍历数组：
+
+```
+<Ui setup>
+  <input for="item in items">{{ item }}</input>
+</Ui>
+<script>
+const items = ["A", "B", "C"]
+</script>
+```
+
+#### 在其他文件中使用
 
 ```javascript
 import UI from "./ui.mcx";
