@@ -196,6 +196,23 @@ show(player: Player, prop: Record<string, any>): Promise<void>;
 - `player: Player` — 目标玩家
 - `prop: Record<string, any>` — 运行时属性（解析 `{{ propName }}` 和 `:param` 绑定）
 
+### showForm
+
+显示编译后的 UI/Form MCX 文件的便捷函数。
+
+```typescript
+function showForm(
+  formMcx: MCXFile<'ui'>,
+  player: Player,
+  prop?: Record<string, any>
+): Promise<void>;
+```
+
+**参数：**
+- `formMcx: MCXFile<'ui'>` — 编译后的 UI/Form MCX 模块（`.mcx` 文件的默认导出）
+- `player: Player` — 目标玩家
+- `prop: Record<string, any>` — （可选）运行时属性
+
 ### UI 布局类型
 
 | 类型 | UI 表单类型 | 说明 |
@@ -223,11 +240,12 @@ UI MCX 支持运行时属性绑定：
 
 ```javascript
 import ui from "./ui.mcx";
+import { showForm } from "@mbler/mcx";
 import { world, system } from "@minecraft/server";
 
 system.run(() => {
   const player = world.getPlayers()[0];
-  ui.app.ui.show(player, { title: "你好！" });
+  showForm(ui, player, { title: "你好！" });
 });
 ```
 

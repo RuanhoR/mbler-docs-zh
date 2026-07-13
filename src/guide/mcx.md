@@ -101,11 +101,12 @@ MCX 目前分为以下几种
   <button click="save">保存</button>
 </Ui>
 <script>
-import { onMounted } from "@mbler/mcx";
+import { onStartup, onMounted } from "@mbler/mcx";
 
 const name = defineProp("Player")
 const enabled = defineProp(true)
 
+onStartup(() => { /* 首次显示前执行一次 */ })
 onMounted(() => { /* 每次显示执行 */ })
 
 function save() { /* name.value 获取当前值 */ }
@@ -145,11 +146,12 @@ const items = ["A", "B", "C"]
 
 ```javascript
 import UI from "./ui.mcx";
+import { showForm } from "@mbler/mcx";
 import { system, world } from "@minecraft/server";
 
 system.run(() => {
   const players = world.getPlayers();
-  UI.app.ui.show(players[0], {
+  showForm(UI, players[0], {
     title: "TEST",
   });
 });
