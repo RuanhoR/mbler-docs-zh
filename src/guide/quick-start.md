@@ -24,6 +24,8 @@ mbler version
 
 ```bash
 pnpm create mbler
+# 可以用-l zh 指定中文交互cli
+pnpm create mbler@latest -l zh
 ```
 
 按照交互式提示配置你的项目。这将生成：
