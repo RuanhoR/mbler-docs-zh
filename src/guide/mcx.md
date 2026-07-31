@@ -60,22 +60,22 @@ MCX 目前分为以下几种
 
 标签映射到底层 Minecraft 表单 API 方法：
 
-| 标签 | `<Ui>` (CustomForm) | `<Form type="modal">` (ModalFormData) | `<Form type="action">` (ActionFormData) | `<Form type="message">` (MessageFormData) |
-|------|---------------------|---------------------------------------|----------------------------------------|------------------------------------------|
-| `title` | 构造参数 | `.title()` | `.title()` | `.title()` |
-| `label` | `.label()` | `.label()` | `.label()` | — |
-| `header` | `.header()` | `.header()` | `.header()` | — |
-| `body` | — | `.label()` | `.body()` | `.body()` |
-| `divider` | `.divider()` | `.divider()` | `.divider()` | — |
-| `spacer` | `.spacer()` | — | — | — |
-| `close-button` | `.closeButton()` | — | — | — |
-| `input` / `textField` | `.textField()` | `.textField()` | — | — |
-| `toggle` | `.toggle()` | `.toggle()` | — | — |
-| `dropdown` | `.dropdown()` | `.dropdown()` | — | — |
-| `slider` | `.slider()` | `.slider()` | — | — |
-| `submit` | — | `.submitButton()` | — | — |
-| `button` | `.button()` | — | `.button()` | — |
-| `button-m` | — | — | — | `.button1()` / `.button2()` |
+| 标签                  | `<Ui>` (CustomForm) | `<Form type="modal">` (ModalFormData) | `<Form type="action">` (ActionFormData) | `<Form type="message">` (MessageFormData) |
+| --------------------- | ------------------- | ------------------------------------- | --------------------------------------- | ----------------------------------------- |
+| `title`               | 构造参数            | `.title()`                            | `.title()`                              | `.title()`                                |
+| `label`               | `.label()`          | `.label()`                            | `.label()`                              | —                                         |
+| `header`              | `.header()`         | `.header()`                           | `.header()`                             | —                                         |
+| `body`                | —                   | `.label()`                            | `.body()`                               | `.body()`                                 |
+| `divider`             | `.divider()`        | `.divider()`                          | `.divider()`                            | —                                         |
+| `spacer`              | `.spacer()`         | —                                     | —                                       | —                                         |
+| `close-button`        | `.closeButton()`    | —                                     | —                                       | —                                         |
+| `input` / `textField` | `.textField()`      | `.textField()`                        | —                                       | —                                         |
+| `toggle`              | `.toggle()`         | `.toggle()`                           | —                                       | —                                         |
+| `dropdown`            | `.dropdown()`       | `.dropdown()`                         | —                                       | —                                         |
+| `slider`              | `.slider()`         | `.slider()`                           | —                                       | —                                         |
+| `submit`              | —                   | `.submitButton()`                     | —                                       | —                                         |
+| `button`              | `.button()`         | —                                     | `.button()`                             | —                                         |
+| `button-m`            | —                   | —                                     | —                                       | `.button1()` / `.button2()`               |
 
 #### 传统表单（非响应式）
 
@@ -111,20 +111,6 @@ onMounted(() => { /* 每次显示执行 */ })
 
 function save() { /* name.value 获取当前值 */ }
 </script>
-```
-
-#### 显式表单类型
-
-覆盖自动表单类型检测，添加 `type` 属性：
-
-```
-<Ui type="action">
-  <button click="hello">{{ title }}</button>
-</Ui>
-
-<Form type="modal">
-  <input>{{ name }}</input>
-</Form>
 ```
 
 支持的类型：`modal`、`action`、`message`。
