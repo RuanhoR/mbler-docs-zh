@@ -68,6 +68,15 @@ MCX TypeScript 编译器（`mcx-tsc`）底层使用 Volar。如果没有任何�
 
 **解决方法：** 检查项目根目录下是否存在 `tsconfig.json`，并且是否包含了你的 `.mcx` 文件。
 
+### Windows 下命令因 shell 元字符被拒绝
+
+Mbler 已移除 `cross-spawn` 依赖，改用 Node 内置的 `child_process` 启动命令。在 Windows 上，通过 shell 经 `.cmd` shim 启动命令时，参数包含 cmd 元字符（`& | < > ^ % ! "` 或换行）会被明确报错拒绝执行，而不是继续执行（fail-closed 安全加固）。
+
+**说明：**
+
+- 含空格的路径会自动加引号，不受影响
+- 非 Windows 平台行为不变
+
 ---
 
 ## 常见问题

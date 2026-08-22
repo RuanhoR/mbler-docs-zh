@@ -42,6 +42,8 @@ import {
 
 ## 正式了解
 
+> **注意：** `<script>` 标签的内容始终以 TypeScript + JSX 解析，无论是否设置 `lang` 属性。泛型（`Map<string, number>`）、带类型注解的箭头函数等 TS 语法无需声明 `lang="ts"` 即可编译；由于 TS 是 JS 的超集，纯 JS 也完全兼容。`lang` 属性仍然允许使用且不会报错。
+
 MCX 目前分为以下几种
 
 - UI MCX
@@ -201,6 +203,8 @@ export {
       - item 声明这里要定义一个物品从script的导出，内容是导出字符串，属性的id是文件Id
 - Script
   - 必须实现在Component定义的这个导出，否则编译时期会报错
+- 标签类型检查
+  - `<Component>` 的子标签类型与定义不匹配时，会抛出明确的编译错误，而不是被静默跳过
 
 关于 @mbler/mcx-core 的组件导出，详见 [MCX 核心 API 参考](./internal/mcx)
 

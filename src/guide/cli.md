@@ -42,6 +42,14 @@ mbler version -show commit
 # 输出： commit: xxx
 ```
 
+传入版本号参数可设置项目版本：
+
+```bash
+mbler version <x.y.z>
+```
+
+这会把新版本写回项目根目录的 `package.json`。仅更新 `package.json`——其他配置文件不会被修改。
+
 ## `build` 命令
 
 将项目构建为 mc 插件。如果环境变量中的 `BUILD_MODULE` 为 `build`，它还会生成一个可以导入游戏的包。
