@@ -58,6 +58,40 @@ mbler version <x.y.z>
 
 监视更改并实时构建。无参数，依赖工作目录上下文。
 
+### `--enable-dev-ws`
+
+启动 WebSocket 服务器实现游戏内热重载。使用此标志启动 watch 后：
+
+1. 服务器监听 `ws://localhost:19145`（默认端口）
+2. 在 Minecraft 中执行 `/connect ws://localhost:19145` 连接
+3. 文件变更触发重建后，mbler 自动向所有已连接的游戏客户端发送 reload 命令
+
+```bash
+pnpm dev --enable-dev-ws
+```
+
+选项：
+
+- `--dev-ws-port <n>` — 自定义 WebSocket 服务器端口（默认：`19145`）
+
+重载行为：
+
+| 变更文件 | 发送命令 |
+|---|---|
+| 脚本文件（`.ts`、`.js`、`.mcx`、`.mjs`） | `/reload` |
+| 资源/manifest/其他文件 | `/reload all` |
+
+![启用 Dev WS（中文）](/static/img-demo-enable-ws-zh.png)
+
+也可以在 `mbler.config.js` 中静态启用：
+
+```js
+build: {
+  devWs: true,
+  // devWsPort: 3000  // 可选自定义端口
+}
+```
+
 ## `set-work-dir` 命令
 
 设置工作目录管理模式。
