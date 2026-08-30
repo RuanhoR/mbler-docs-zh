@@ -14,7 +14,7 @@ export default defineConfig({
     lang: "ts",
     main: "index.ts",
   },
-  minify: false,
+  minify: "oxc",
 });
 ```
 
@@ -104,13 +104,70 @@ outGameOnDev: true,
 
 打包后脚本的压缩引擎。
 
-- 类型：`boolean | 'oxc' | 'terser' | 'esbuild'`
-- 默认值：`false`
-- 设置为 `true` 时使用默认压缩器。设置为特定引擎名称（`'oxc'`、`'terser'`、`'esbuild'`）可选择特定的压缩工具。
+- 类型：`'oxc' | 'terser' | 'esbuild' | 'none'`
+- 默认值：省略该字段时为 `'oxc'`
+- `'none'` 表示完全不做脚本压缩，构建产物保持可读。设置为特定引擎名称（`'oxc'`、`'terser'`、`'esbuild'`）可选择特定的压缩工具。
+
+### `manifest`
+
+manifest.json 的完整自定义配置节，同时作用于行为包和资源包的 manifest 生成。`format_version` 固定为 `2`，不可配置。
+
+::: tip
+如果你在包源目录（`behavior/` 或 `resources/`）中自己提供了 `manifest.json`，它仍会浅合并覆盖 mbler 生成的 manifest（参见[项目结构](./project)）。
+:::
+
+- `pack_scope` — 资源包作用域：`'any'`（默认）、`'world'` 或 `'global'`
+- `platform_locked` — 设为 `true` 时禁止该包在其他玩家的世界或服务器上使用
+- `base_game_version` — 世界模板基于的游戏版本
+- `allow_random_seed` — 世界模板是否使用随机种子
+- `lock_template_options` — 世界模板是否默认禁止玩家修改世界选项
+- `capabilities` — 额外功能数组，可选值：`'chemistry'`、`'editorExtension'`、`'experimental_custom_ui'`、`'pbr'`、`'raytraced'`、`'script_eval'`。有脚本的包会自动加入 `'script_eval'`，用户设置会与之合并去重。
+- `dependencies` — 额外依赖数组，追加在自动生成的 SAPI 依赖（`@minecraft/server`，开启 `script.ui` 时还有 `@minecraft/server-ui`，以及 `build.otherDeps`）之后。支持两种形式：
+  - 包依赖 — `{ uuid, version, name? }`，按 UUID 依赖其他包，`version` 为 `string | number[]`
+  - 脚本模块依赖 — `{ module_name?, uuid?, version }`，Minecraft 1.21.120 起 `version` 可为 `'beta'`
+- `subpacks` — 子包数组：`{ name, folder_name, memory_tier, memory_performance_tier? }`
+- `settings` — 游戏内附加包设置控件数组：
+  - `{ type: 'label', text? }`
+  - `{ type: 'input', text?, name, default? }`
+  - `{ type: 'toggle', text?, name, default? }`
+  - `{ type: 'slider', text?, name, min?, max?, step?, default? }`
+  - `{ type: 'dropdown', text?, name, options?, default? }` — `options` 项为字符串或 `{ text, name }`
+- `metadata` — 包元数据：`{ authors?, license?, url?, product_type? }`。`product_type: 'addon'` 表示该包属于附加包（行为包不会禁用成就）。`metadata.generated_with` 由 mbler 自动注入 `{ mbler: [版本号] }`，不可覆盖。
+
+::: tip TypeScript 枚举
+TypeScript 配置中可从 `mbler` 导入 `MblerPackScope`、`MblerManifestCapability`、`MblerManifestSettingType`（`'label' | 'input' | 'toggle' | 'slider' | 'dropdown'`）和 `MblerManifestProductType`。纯 JavaScript 配置直接写字符串值即可。
+:::
+
+```js
+manifest: {
+  pack_scope: "any",
+  platform_locked: false,
+  capabilities: ["pbr"],
+  dependencies: [
+    { module_name: "@minecraft/server-admin", version: "1.0.0-beta" },
+  ],
+  subpacks: [
+    { name: "高清材质", folder_name: "hd", memory_tier: 4 },
+  ],
+  settings: [
+    { type: "label", text: "基础设置" },
+    { type: "input", text: "玩家名", name: "playerName", default: "Steve" },
+    { type: "toggle", text: "开启特效", name: "fx", default: true },
+    { type: "slider", text: "音量", name: "volume", min: 0, max: 100, step: 1, default: 50 },
+    { type: "dropdown", text: "难度", name: "difficulty", options: ["简单", "困难"], default: "简单" },
+  ],
+  metadata: {
+    authors: ["Ruanhor"],
+    license: "MIT",
+    url: "https://github.com/RuanhoR/mbler",
+    product_type: "addon",
+  },
+}
+```
 
 ### `build`
 
-高级构建配置。
+高级构建配置。脚本产物固定写入行为包的 `scripts/` 目录，输出文件名由 `script.main` 推导（扩展名统一为 `.js`）；`script.lang: "mcx"` 项目固定为 `scripts/index.js`。
 
 ```js
 build: {
@@ -159,20 +216,6 @@ Rolldown 构建缓存模式。
 - 类型：`boolean`
 - 默认值：`true`
 - 当为 `false` 时，脚本将原样复制而不打包
-
-#### `build.outputDir`
-
-编译后脚本在行为包输出中的子目录。
-
-- 类型：`string`
-- 默认值：`"scripts"`
-
-#### `build.outputFilename`
-
-覆盖打包脚本的输出文件名。
-
-- 类型：`string`
-- 默认值：从入口脚本名称派生
 
 #### `build.clean`
 

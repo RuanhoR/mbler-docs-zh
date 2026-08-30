@@ -194,7 +194,8 @@ interface MblerConfigData {
   mcVersion: string;
   outdir?: MblerConfigOutdir;
   script?: MblerConfigScript;
-  minify?: 'oxc' | 'terser' | 'esbuild';
+  minify?: 'oxc' | 'terser' | 'esbuild' | 'none';
+  manifest?: MblerManifestConfig;
   build?: Partial<MblerBuildConfig>;
 }
 ```
@@ -207,7 +208,8 @@ interface MblerConfigData {
 - `mcVersion: string` - Minecraft 版本（必填）
 - `outdir?: MblerConfigOutdir` - 输出目录配置
 - `script?: MblerConfigScript` - 脚本配置
-- `minify?: 'oxc' | 'terser' | 'esbuild'` - 压缩引擎（默认：'oxc'）
+- `minify?: 'oxc' | 'terser' | 'esbuild' | 'none'` - 压缩引擎（默认：'oxc'，'none' 表示不做脚本压缩）
+- `manifest?: MblerManifestConfig` - manifest.json 完整自定义配置（同时作用于行为包和资源包）
 - `build?: Partial<MblerBuildConfig>` - 构建配置
 
 ---
@@ -254,6 +256,40 @@ interface MblerConfigScript {
 
 ---
 
+### Types#MblerManifestConfig
+
+manifest.json 完整自定义配置接口，同时作用于行为包和资源包。`format_version` 固定为 `2`。相关的枚举可从 `mbler` 导入：`MblerPackScope`（'any' | 'world' | 'global'）、`MblerManifestCapability`（'chemistry' | 'editorExtension' | 'experimental_custom_ui' | 'pbr' | 'raytraced' | 'script_eval'）、`MblerManifestSettingType`（'label' | 'input' | 'toggle' | 'slider' | 'dropdown'）、`MblerManifestProductType`（'addon'）。
+
+```typescript
+interface MblerManifestConfig {
+  pack_scope?: MblerPackScope;
+  platform_locked?: boolean;
+  base_game_version?: string;
+  allow_random_seed?: boolean;
+  lock_template_options?: boolean;
+  capabilities?: MblerManifestCapability[];
+  dependencies?: MblerManifestDependency[];
+  subpacks?: MblerManifestSubpack[];
+  settings?: MblerManifestSetting[];
+  metadata?: MblerManifestMetadata;
+}
+```
+
+**属性：**
+
+- `pack_scope?: MblerPackScope` - 资源包作用域（默认：'any'）
+- `platform_locked?: boolean` - 禁止该包在其他玩家的世界或服务器上使用
+- `base_game_version?: string` - 世界模板基于的游戏版本
+- `allow_random_seed?: boolean` - 世界模板是否使用随机种子
+- `lock_template_options?: boolean` - 世界模板是否默认禁止玩家修改世界选项
+- `capabilities?: MblerManifestCapability[]` - 额外功能，与自动加入的 `'script_eval'` 合并去重
+- `dependencies?: MblerManifestDependency[]` - 额外依赖（包 UUID 形式 `{ uuid, version, name? }` 或脚本模块形式 `{ module_name?, uuid?, version }`，1.21.120 起 version 可为 'beta'），追加在自动生成的 SAPI 依赖之后
+- `subpacks?: MblerManifestSubpack[]` - 子包数组（`{ name, folder_name, memory_tier, memory_performance_tier? }`）
+- `settings?: MblerManifestSetting[]` - 游戏内附加包设置控件（label / input / toggle / slider / dropdown）
+- `metadata?: MblerManifestMetadata` - 包元数据（`{ authors?, license?, url?, product_type? }`）；`generated_with` 由 mbler 自动注入 `{ mbler: [版本号] }`，不可覆盖
+
+---
+
 ### Types#MblerBuildConfig
 
 构建配置接口。
@@ -266,8 +302,6 @@ interface MblerBuildConfig {
   cachePath: string;
   bundle: boolean;
   clean?: boolean;
-  outputDir: string;
-  outputFilename: string;
   onEnd: (ctx: MblerConfigData) => void | Promise<void>;
   onStart: (ctx: MblerConfigData) => void | Promise<void>;
   onWarn: (ctx: MblerConfigData, warning: Error) => void | Promise<void>;
@@ -282,8 +316,6 @@ interface MblerBuildConfig {
 - `cachePath: string` - 缓存文件路径
 - `bundle: boolean` - 是否通过 Rollup 打包脚本（默认：true）
 - `clean?: boolean` - 构建前清理输出目录（默认：true）
-- `outputDir: string` - 输出子目录（默认：'scripts'）
-- `outputFilename: string` - 强制输出文件名
 - `onEnd: (ctx: MblerConfigData) => void | Promise<void>` - 构建完成回调
 - `onStart: (ctx: MblerConfigData) => void | Promise<void>` - 构建开始回调
 - `onWarn: (ctx: MblerConfigData, warning: Error) => void | Promise<void>` - 警告回调
