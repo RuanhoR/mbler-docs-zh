@@ -3,7 +3,7 @@
 mbler 工具链为 `.mcx` 文件提供了两个官方插件，分别用于代码检查和单元测试：
 
 - **[`@mbler/eslint-plugin-mcx`](https://www.npmjs.com/package/@mbler/eslint-plugin-mcx)** — ESLint 解析器 + 规则，直接 lint `.mcx` 文件
-- **[`@mbler/vite-plugin-mcx`](https://www.npmjs.com/package/@mbler/vite-plugin-mcx)** — Vite/Vitest 插件，让测试里可以 `import` 编译后的 `.mcx` 模块
+- **Vitest 插件** — 已内置于 `@mbler/mcx-core`（`vitePlugin` 导出），让测试里可以 `import` 编译后的 `.mcx` 模块，无需额外安装
 
 ## ESLint 插件
 
@@ -62,7 +62,7 @@ export default [
 
 ## Vitest 插件
 
-`@mbler/vite-plugin-mcx` 封装了 `@mbler/mcx-core` 的 `rollupPlugin`，不改核心代码：
+`@mbler/mcx-core` 直接导出 `vitePlugin`（封装自身的 `rollupPlugin`，不改核心代码）：
 
 - 只让 `.mcx` 进入内部 transform，`.ts` 与图片仍走 Vite 自带的 esbuild/资源管线；
 - `resolveId` 失败时回退给宿主解析器而不是抛错（裸导入仍会按 `moduleDir` 解析）；
@@ -72,7 +72,6 @@ export default [
 ### 安装
 
 ```bash
-pnpm add -D @mbler/vite-plugin-mcx
 ```
 
 ### 配置
@@ -81,11 +80,11 @@ pnpm add -D @mbler/vite-plugin-mcx
 // vitest.config.ts
 import ts from "typescript";
 import { defineConfig } from "vitest/config";
-import { mcxPlugin } from "@mbler/vite-plugin-mcx";
+import { vitePlugin } from "@mbler/mcx-core";
 
 export default defineConfig({
   plugins: [
-    mcxPlugin(
+    vitePlugin(
       {
         moduleDir: "behavior/modules", // 裸导入（如 @mbler/mcx）的解析目录
         tsconfigPath: "tsconfig.json",
