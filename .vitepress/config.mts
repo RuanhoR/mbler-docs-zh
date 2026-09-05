@@ -29,6 +29,10 @@ export const sidebar: ThemeConfig["sidebar"] = {
           text: "使用mcx创建项目(Beta)",
         },
         {
+          link: "/guide/plugins",
+          text: "ESLint 与 Vitest 插件",
+        },
+        {
           text: "Vscode 扩展",
           link: "/guide/vscode",
         },
