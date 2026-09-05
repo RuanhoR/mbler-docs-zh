@@ -30,13 +30,15 @@ export default [
 | 规则 | 默认级别 | 说明 |
 | --- | --- | --- |
 | `mcx/valid-event-binding` | error | `<Event>` 绑定的事件名必须是已知的 `@minecraft/server` 世界事件，且处理函数必须在 `<script>` 中导出 |
+
+事件名不是硬编码的：lint 时插件会从**你项目里安装的** `@minecraft/server` 的 `index.d.ts` 中提取 `WorldAfterEvents` / `WorldBeforeEvents` 的属性名，因此校验范围始终与你实际使用的版本一致。结果缓存在 `<项目>/node_modules/.tmp/eslint-plugin-mcx/events-<版本>.json`，版本变化时自动重新生成；若 `@minecraft/server` 无法解析，则退回插件内置的兜底列表。绑定会按标签的 `@after` / `@before` 作用域分别校验。
 | `mcx/no-duplicate-root-tag` | error | `App` / `Event` / `Ui` / `Form` / `script` 每个文件只能出现一次（可通过 `unique` 选项调整） |
 | `mcx/valid-prop-value` | error | 形似 JSON 对象/数组的属性值必须能通过 `JSON.parse` |
 | `mcx/require-script-lang` | warn | `<script>` 必须声明 `lang="ts"` |
 
 ### 规则选项
 
-- `valid-event-binding`：`{ allowUnknown?: boolean, extraEvents?: string[], ignoreKeys?: string[] }`。`McxExtendsBy` 等 `Mcx*` 编译器指令始终放行。
+- `valid-event-binding`：`{ allowUnknown?: boolean, extraEvents?: string[], ignoreKeys?: string[] }`。`McxExtendsBy` 等 `Mcx*` 编译器指令始终放行。事件名按 `@after` / `@before` 作用域分别校验；未写作用域时，任一列表中的事件都接受。
 - `no-duplicate-root-tag`：`{ unique?: string[] }`（默认 `['App', 'Event', 'Ui', 'Form', 'script']`）。
 - `require-script-lang`：`{ allow?: string[] }`（默认 `['ts']`）。
 
