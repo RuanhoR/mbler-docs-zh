@@ -33,6 +33,10 @@ export const sidebar: ThemeConfig["sidebar"] = {
           text: "ESLint 与 Vitest 插件",
         },
         {
+          link: "/guide/tooling",
+          text: "推荐工具链",
+        },
+        {
           text: "Vscode 扩展",
           link: "/guide/vscode",
         },
