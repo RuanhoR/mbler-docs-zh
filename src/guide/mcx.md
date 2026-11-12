@@ -58,6 +58,10 @@ MCX 目前分为以下几种
 - **`<Ui>`** — CustomForm（响应式，Observable 绑定）。需要 `@minecraft/server-ui` >= 2.1。
 - **`<Form>`** — 传统 FormData（ModalFormData / ActionFormData / MessageFormData）。兼容任意版本。
 
+::: tip
+加上 `type="jsonui"` 后，`<Ui>` 不再编译成表单，而是交给 [JSON UI 插件](./jsonui) 编译成原版界面资源（HUD、server form 屏、自定义屏）。
+:::
+
 #### 可用标签
 
 标签映射到底层 Minecraft 表单 API 方法：

@@ -165,6 +165,30 @@ manifest: {
 }
 ```
 
+### `mcxPlugin`
+
+`script.lang: "mcx"` 项目的编译器插件。插件是一个带 `name` 和一组钩子的普通对象
+（`onTransform`、`onTransformed`、`onThrow`、`tags`、`onBuildStart` / `onBuildEnd`）；
+可以传单个插件、工厂函数，或者它们的数组。
+
+- 类型：`McxPlugin | (() => McxPlugin) | Array<McxPlugin | (() => McxPlugin)>`
+- 默认：`undefined`（只用内置编译器，产物逐字节不变）
+
+```js
+import jsonui from "@mbler/mcx-plugin-jsonui";
+
+export default defineConfig({
+  // ...
+  mcxPlugin: [jsonui()],
+});
+```
+
+插件按数组顺序执行。钩子 API 见 [MCX 编译器插件](./mcx-plugin)，官方插件见 [JSON UI 插件](./jsonui)。
+
+::: tip
+`mcxPlugin` 只对 `script.lang: "mcx"` 生效，`ts` / `js` 项目会忽略它。
+:::
+
 ### `build`
 
 高级构建配置。脚本产物固定写入行为包的 `scripts/` 目录，输出文件名由 `script.main` 推导（扩展名统一为 `.js`）；`script.lang: "mcx"` 项目固定为 `scripts/index.js`。

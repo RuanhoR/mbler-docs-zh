@@ -30,6 +30,9 @@ import {
   compile_component, // compileComponent, RunScript, FilePoint 辅助函数
   rollupPlugin,      // Rollup 插件工厂
   rolldownPlugin,    // Rolldown 插件工厂
+  // 编译器插件 API：
+  defineMcxPlugin,   // 供插件作者使用的类型化辅助函数
+  resolveMcxPlugins, // 把 CompileOpt.mcxPlugin 解析为有序插件列表
   // 组件类（从 @mbler/mcx-component 重新导出）：
   ItemComponent,
   BlockComponent,
@@ -277,6 +280,30 @@ async function transform(
 
 **返回值：**
 - `Promise<string>` - 转换后的 JavaScript 代码
+
+---
+
+### defineMcxPlugin / resolveMcxPlugins
+
+编译器插件运行时。`CompileOpt.mcxPlugin` 接受插件对象、工厂函数，或它们的数组；
+`resolveMcxPlugins` 会把值铺平、按声明顺序调用工厂，并校验每项都有非空的 `name`。
+
+```typescript
+function defineMcxPlugin(plugin: McxPlugin): McxPlugin;
+function resolveMcxPlugins(opt: CompileOpt): McxPlugin[];
+```
+
+每个 `.mcx` 文件的钩子执行顺序：
+
+1. 收集 `tags` / `registerTag` 处理函数；
+2. `onTransform` —— 第一个返回字符串的钩子整体替换模块（并跳过第 3 步）；
+3. 内置 transform；
+4. `onTransformed` —— 在多个插件之间链式执行；
+5. 用 Babel 应用 `addImport` / `addStatement` / `addExport` / `setType` 的注入。
+
+第 2–3 步抛出的错误会交给 `onThrow`，返回字符串即可恢复该文件。`onBuildStart` /
+`onBuildEnd` 由 `rollupPlugin`、`rolldownPlugin` 和 `vitePlugin` 转发。
+面向使用者的 API 见 [MCX 编译器插件](../mcx-plugin)。
 
 ---
 

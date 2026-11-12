@@ -37,6 +37,14 @@ export const sidebar: ThemeConfig["sidebar"] = {
           text: "推荐工具链",
         },
         {
+          link: "/guide/mcx-plugin",
+          text: "MCX 编译器插件",
+        },
+        {
+          link: "/guide/jsonui",
+          text: "JSON UI 插件",
+        },
+        {
           text: "Vscode 扩展",
           link: "/guide/vscode",
         },
