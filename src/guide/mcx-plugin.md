@@ -141,6 +141,45 @@ mcxPlugin: [jsonui(), myPlugin],      // 工厂调用 + 普通对象
 - `onBuildStart` —— 清缓存、重置计数器；
 - `onBuildEnd` —— 落盘聚合文件（JSON UI 插件的 `ui/_ui_defs.json` 就是在这里写的）。
 
+## 编辑器补全
+
+插件可以描述自己的标签，让 MCX 语言服务器像内置 DSL 一样为它补全：
+
+```ts
+export default defineMcxPlugin({
+  name: "layout",
+  completion: {
+    name: "layout", // 贡献者 id
+    rootTags: ["Layout"], // 在 .mcx 顶层补全
+    attributeSets: {
+      "layout-root": [{ name: "size", detail: "面板尺寸" }],
+    },
+    tags: [
+      {
+        name: "Layout",
+        detail: "布局根节点",
+        container: true,
+        extends: ["layout-root"],
+        children: ["Row", "Column"],
+      },
+      { name: "Row", detail: "行容器", extends: ["layout-root"] },
+    ],
+  },
+});
+```
+
+| 字段              | 说明                                                       |
+| ----------------- | ---------------------------------------------------------- |
+| `name`            | 贡献者 id，通常就是插件包名                                |
+| `rootTags`        | 文件顶层（没有外层标签时）可补全的标签                     |
+| `tags[].children` | 该标签内部可补全的子标签                                   |
+| `tags[].attributes` | 属性，可带 `detail`、`insertText`、`values`               |
+| `tags[].extends`  | 继承其他标签或 `attributeSets` 键的属性                    |
+| `tags[].container` | 是否在下一行继续保持「子标签」上下文                      |
+| `values`          | `attr="…"` 里的枚举补全，例如 `availability`               |
+
+构建时 mbler 会把所有已配置插件的 `completion` 汇总写入 `.mbler/mcx-completion.json`，语言服务器再把它合并到内置表之上；文件一变 VS Code 扩展就会刷新。移除插件后该文件会被删掉，旧补全不会残留。
+
 ## 在测试中使用插件
 
 `vitePlugin` 接受同样的 `mcxPlugin` 字段，因此单测里也能带着插件编译 `.mcx`：
