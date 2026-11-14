@@ -127,6 +127,51 @@ export default jsonui({ availabilities: [myScreen] });
 
 插件选项：`availability`、`namespace`、`uiDir`（默认 `ui`）、`formMarker`（默认 `mbler_ui:`）、`saveRaw`、`resourcesDir`（覆盖输出目录）、`availabilities`。
 
+## 预览
+
+插件自带预览服务器，不用启动游戏就能看到界面效果：
+
+```bash
+pnpm mcx-plugin-jsonui preview                        # 当前工程 → http://127.0.0.1:5174
+pnpm mcx-plugin-jsonui preview ./src/ui --port 6000 --host 0.0.0.0
+```
+
+| 参数                 | 说明                             |
+| -------------------- | -------------------------------- |
+| `-p, --port <port>`  | 监听端口，默认 `5174`            |
+| `-H, --host <host>`  | 绑定地址，默认 `127.0.0.1`       |
+| `-s, --size <WxH>`   | 逻辑画布尺寸，默认 `960x540`     |
+| `-w, --watch`        | 监听文件并热更新（默认开启）     |
+| `--no-watch`         | 关闭文件监听                     |
+| `-o, --open`         | 打开浏览器（默认开启）           |
+| `--no-open`          | 不自动打开浏览器                 |
+
+工程里所有 `<Ui type="jsonui">` 文件都会出现在左侧文件树里，点开即按游戏规则渲染：anchor、`%` / `px` / `%x` 长度、`stack_panel`、`grid`、`$变量` 与 `#binding`，保存文件后页面自动热更新。贴图会从工程里的资源包中查找。
+
+看起来像 JSON 但解析失败的属性值（例如没加引号的 `size="[100%,100%]"`）会被列为警告——游戏同样会忽略它，通常表现为控件尺寸变成 0×0。
+
+### 截图 API
+
+同一个渲染器也通过 HTTP 暴露，方便工具链使用（CI 快照、或调试布局的 agent）。图像在进程内计算：不启动浏览器，也不依赖原生图像库。
+
+```bash
+GET /api/screenshot?id=src/ui/shop.mcx&format=png&scale=2&bg=dark
+GET /api/screenshot?id=src/ui/shop.mcx&format=svg
+GET /api/screens            # 文件树、元信息、警告
+GET /api/screen?id=...      # 编译后的 JSON UI 文档
+```
+
+| 参数       | 说明                                                     |
+| ---------- | -------------------------------------------------------- |
+| `id`       | 界面 id（相对工程根目录的路径），默认取第一个            |
+| `format`   | `png`（默认）或 `svg`                                    |
+| `scale`    | 像素倍率 0.25–8，默认 `1`                                |
+| `w`, `h`   | 画布尺寸，默认使用服务器的画布尺寸                       |
+| `bg`       | `dark`（默认）、`checker` 或 `transparent`               |
+| `download` | 传 `1` 时附带 `Content-Disposition` 文件名               |
+
+PNG 由插件自己光栅化：几何布局与浏览器预览完全一致，文字使用内置 5×7 像素字体（拉丁字符，小写按大写绘制，未知字符画成方框），图片按占位块绘制。需要真实字体渲染和嵌入贴图时，请用 `format=svg`。
+
 ## 编译后的模块
 
 生成的 `.mcx` 模块会导出描述对象、`JSONUIComponent` 类和实例：
